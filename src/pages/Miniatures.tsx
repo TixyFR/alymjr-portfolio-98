@@ -31,7 +31,7 @@ const Miniatures = () => {
           title="Mes Miniatures YouTube"
           description="Collection complète de mes miniatures YouTube créées pour différents clients et projets personnels. Chaque miniature est conçue pour maximiser l'engagement et attirer l'attention des viewers."
           images={miniatures}
-          liquidStyle={true}
+          columns={4}
         />
       </div>
     </Layout>

@@ -15,6 +15,7 @@ const Autres = () => {
           title="Autres Créations"
           description="Découvrez mes autres projets graphiques variés : logos, designs web, illustrations et créations artistiques diverses."
           images={autres}
+          columns={3}
         />
       </div>
     </Layout>
