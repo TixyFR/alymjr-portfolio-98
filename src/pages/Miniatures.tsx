@@ -1,35 +1,11 @@
 import Gallery from '@/components/Gallery';
 import Layout from '@/components/Layout';
-import { useMiniatures } from '@/hooks/useMiniatures';
+import { useContent } from '@/hooks/useContent';
 
 const Miniatures = () => {
-  const { miniatures, isLoading } = useMiniatures();
+  const { content, isLoading } = useContent();
 
-  // Fallback static images if no data in Supabase yet
-  const fallbackMiniatures = [
-    "https://i.imgur.com/87YPfsX.jpeg",
-    "https://i.imgur.com/0GC8OVi.jpeg", 
-    "https://i.imgur.com/wdC2AZp.png",
-    "https://i.imgur.com/SUU9T3i.png",
-    "https://i.imgur.com/SlPHPIU.png",
-    "https://i.imgur.com/VEEOan5.png",
-    "https://i.imgur.com/tY3LzGE.jpeg",
-    "https://i.imgur.com/BRjjMBD.jpeg",
-    "https://i.imgur.com/VvsTs5m.jpeg",
-    "https://i.imgur.com/GAq9uPd.jpeg",
-    "https://i.imgur.com/RyW1zt9.jpeg",
-    "https://i.imgur.com/inenxOt.png",
-    "https://i.imgur.com/krcDOBd.png",
-    "https://i.imgur.com/EZQduv4.jpeg",
-    "https://i.imgur.com/1hks5NY.jpeg",
-    "https://i.imgur.com/bCAAAWM.png",
-    "https://i.imgur.com/wwiwKAh.png",
-    "https://i.imgur.com/D5da0wH.jpeg"
-  ];
-
-  const displayImages = miniatures.length > 0 
-    ? miniatures.map(m => m.image_url)
-    : fallbackMiniatures;
+  const displayImages = content.map(item => item.image_url);
 
   if (isLoading) {
     return (

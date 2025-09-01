@@ -1,8 +1,12 @@
 import Gallery from '@/components/Gallery';
 import Layout from '@/components/Layout';
+import { useContent } from '@/hooks/useContent';
 
 const Affiches = () => {
-  const affiches = [
+  const { content, isLoading } = useContent();
+
+  // Use existing static images plus database content
+  const fallbackAffiches = [
     "https://i.imgur.com/JC8B9Qn.jpeg",
     "https://i.imgur.com/1Y9lMAK.jpeg", 
     "https://i.imgur.com/P34l3Kj.jpeg",
@@ -19,6 +23,22 @@ const Affiches = () => {
     "https://i.imgur.com/JUvzinj.jpeg"
   ];
 
+  const dbImages = content.map(item => item.image_url);
+  const displayImages = [...dbImages, ...fallbackAffiches];
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="pt-20 flex justify-center items-center min-h-[50vh]">
+          <div className="text-center">
+            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p>Chargement des affiches...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="pt-20">
@@ -26,7 +46,7 @@ const Affiches = () => {
           id="affiches-page"
           title="Mes Affiches Créatives"
           description="Une collection d'affiches créatives dans leur format original, optimisées pour différents événements et campagnes."
-          images={affiches}
+          images={displayImages}
           columns={6}
         />
       </div>

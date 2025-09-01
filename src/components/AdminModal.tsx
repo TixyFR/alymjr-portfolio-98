@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import MiniaturesManager from '@/components/MiniaturesManager';
+import ContentManager from '@/components/ContentManager';
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -110,7 +110,7 @@ const AdminModal = ({ isOpen, onClose }: AdminModalProps) => {
                 <p className="text-muted-foreground">Panel d'administration</p>
               </div>
 
-              <MiniaturesManager />
+              <ContentManager />
 
               <Button 
                 onClick={handleLogout}
