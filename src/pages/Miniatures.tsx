@@ -7,10 +7,11 @@ const Miniatures = () => {
 
   // Fallback images for miniatures
   const fallbackMiniatures = [
-    "https://i.imgur.com/xuzJAal.jpeg",
+    "https://i.imgur.com/aZXDQiC.jpeg",
     "https://i.imgur.com/87YPfsX.jpeg",
     "https://i.imgur.com/0GC8OVi.jpeg", 
     "https://i.imgur.com/wdC2AZp.png",
+    "https://i.imgur.com/xuzJAal.jpeg",
     "https://i.imgur.com/SUU9T3i.png",
     "https://i.imgur.com/SlPHPIU.png",
     "https://i.imgur.com/VEEOan5.png",
@@ -25,7 +26,7 @@ const Miniatures = () => {
     "https://i.imgur.com/1hks5NY.jpeg",
     "https://i.imgur.com/bCAAAWM.png",
     "https://i.imgur.com/wwiwKAh.png",
-    "https://i.imgur.com/D5da0wH.jpeg"
+    "https://i.imgur.com/D5da0wH.jpeg",
   ];
 
   const dbImages = content.map(item => item.image_url);
