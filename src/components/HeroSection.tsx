@@ -12,6 +12,7 @@ const HeroSection = () => {
   // Toutes les images du site pour le carousel
   const allImages = [
     // Miniatures
+    "https://i.imgur.com/xuzJAal.jpeg",
     "https://i.imgur.com/87YPfsX.jpeg",
     "https://i.imgur.com/0GC8OVi.jpeg", 
     "https://i.imgur.com/wdC2AZp.png",
@@ -29,8 +30,7 @@ const HeroSection = () => {
     "https://i.imgur.com/1hks5NY.jpeg",
     "https://i.imgur.com/bCAAAWM.png",
     "https://i.imgur.com/wwiwKAh.png",
-    "https://i.imgur.com/D5da0wH.jpeg",
-    "https://i.imgur.com/xuzJAal.jpeg"
+    "https://i.imgur.com/D5da0wH.jpeg"
     // Affiches
     "https://i.imgur.com/JC8B9Qn.jpeg",
     "https://i.imgur.com/1Y9lMAK.jpeg", 
