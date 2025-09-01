@@ -1,8 +1,12 @@
 import Gallery from '@/components/Gallery';
 import Layout from '@/components/Layout';
+import { useMiniatures } from '@/hooks/useMiniatures';
 
 const Miniatures = () => {
-  const miniatures = [
+  const { miniatures, isLoading } = useMiniatures();
+
+  // Fallback static images if no data in Supabase yet
+  const fallbackMiniatures = [
     "https://i.imgur.com/87YPfsX.jpeg",
     "https://i.imgur.com/0GC8OVi.jpeg", 
     "https://i.imgur.com/wdC2AZp.png",
@@ -23,6 +27,23 @@ const Miniatures = () => {
     "https://i.imgur.com/D5da0wH.jpeg"
   ];
 
+  const displayImages = miniatures.length > 0 
+    ? miniatures.map(m => m.image_url)
+    : fallbackMiniatures;
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="pt-20 flex justify-center items-center min-h-[50vh]">
+          <div className="text-center">
+            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p>Chargement des miniatures...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="pt-20">
@@ -30,7 +51,7 @@ const Miniatures = () => {
           id="miniatures-page"
           title="Mes Miniatures YouTube"
           description="Collection complète de mes miniatures YouTube créées pour différents clients et projets personnels. Chaque miniature est conçue pour maximiser l'engagement et attirer l'attention des viewers."
-          images={miniatures}
+          images={displayImages}
           columns={4}
         />
       </div>

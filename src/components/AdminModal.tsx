@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
+import MiniaturesAdmin from './MiniaturesAdmin';
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -16,9 +17,9 @@ const AdminModal = ({ isOpen, onClose }: AdminModalProps) => {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Credentials temporaires (en attendant Supabase)
+  // Credentials admin
   const ADMIN_USERNAME = 'admin';
-  const ADMIN_PASSWORD = 'admin123';
+  const ADMIN_PASSWORD = 'TAODANSARA34';
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +43,7 @@ const AdminModal = ({ isOpen, onClose }: AdminModalProps) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-      <Card className="w-full max-w-md mx-4 glass">
+      <Card className="w-full max-w-4xl mx-4 glass max-h-[90vh] overflow-y-auto">
         <CardHeader className="relative">
           <button
             onClick={onClose}
@@ -109,37 +110,7 @@ const AdminModal = ({ isOpen, onClose }: AdminModalProps) => {
                 <p className="text-muted-foreground">Panel d'administration</p>
               </div>
 
-              <div className="bg-muted/50 rounded-lg p-4">
-                <h4 className="font-medium mb-2">⚠️ Fonctionnalité en attente</h4>
-                <p className="text-sm text-muted-foreground">
-                  Pour activer la gestion complète des images (ajout/suppression), 
-                  connectez votre projet à Supabase via le bouton vert en haut à droite.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  disabled
-                >
-                  📝 Gérer les miniatures
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  disabled
-                >
-                  🎨 Gérer les affiches
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  disabled
-                >
-                  ➕ Ajouter des images
-                </Button>
-              </div>
+              <MiniaturesAdmin />
 
               <Button 
                 onClick={handleLogout}
