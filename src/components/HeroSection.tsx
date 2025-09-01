@@ -30,6 +30,7 @@ const HeroSection = () => {
     "https://i.imgur.com/bCAAAWM.png",
     "https://i.imgur.com/wwiwKAh.png",
     "https://i.imgur.com/D5da0wH.jpeg",
+    "https://i.imgur.com/xuzJAal.jpeg"
     // Affiches
     "https://i.imgur.com/JC8B9Qn.jpeg",
     "https://i.imgur.com/1Y9lMAK.jpeg", 
