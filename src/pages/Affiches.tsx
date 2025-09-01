@@ -3,9 +3,9 @@ import Layout from '@/components/Layout';
 import { useContent } from '@/hooks/useContent';
 
 const Affiches = () => {
-  const { content, isLoading } = useContent();
+  const { content, isLoading } = useContent('affiches');
 
-  // Use existing static images plus database content
+  // Fallback images for affiches
   const fallbackAffiches = [
     "https://i.imgur.com/JC8B9Qn.jpeg",
     "https://i.imgur.com/1Y9lMAK.jpeg", 

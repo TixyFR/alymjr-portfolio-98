@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-// Simplify hook for existing database structure
+// Updated hook with category support
 export const useContent = (category?: string) => {
   const [content, setContent] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +15,15 @@ export const useContent = (category?: string) => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setContent(data || []);
+      
+      let filteredData = (data as any[]) || [];
+      if (category) {
+        filteredData = filteredData.filter((item: any) => 
+          item.category === category || (!item.category && category === 'miniatures')
+        );
+      }
+      
+      setContent(filteredData);
     } catch (error) {
       console.error('Error fetching content:', error);
       toast.error('Erreur lors du chargement');
@@ -28,14 +36,19 @@ export const useContent = (category?: string) => {
     try {
       const { data, error } = await supabase
         .from('miniatures')
-        .insert([{ image_url: item.image_url, title: item.category || 'image' }])
+        .insert([{ 
+          image_url: item.image_url, 
+          title: `${item.category || 'miniature'} - ${Date.now()}`
+        }])
         .select()
         .single();
 
       if (error) throw error;
-      setContent(prev => [data, ...prev]);
+      // Add category info client-side for now
+      const itemWithCategory = { ...data, category: item.category || 'miniatures' };
+      setContent(prev => [itemWithCategory, ...prev]);
       toast.success('Contenu ajouté avec succès');
-      return data;
+      return itemWithCategory;
     } catch (error) {
       console.error('Error adding content:', error);
       toast.error('Erreur lors de l\'ajout');

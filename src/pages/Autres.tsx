@@ -3,9 +3,9 @@ import Layout from '@/components/Layout';
 import { useContent } from '@/hooks/useContent';
 
 const Autres = () => {
-  const { content, isLoading } = useContent();
+  const { content, isLoading } = useContent('autres');
 
-  // Use existing static images plus database content
+  // Fallback images for autres
   const fallbackAutres = [
     "https://i.imgur.com/qnd1D2P.png",
     "https://i.imgur.com/MS4deQ7.jpeg"
