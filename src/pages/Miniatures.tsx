@@ -7,6 +7,7 @@ const Miniatures = () => {
 
   // Fallback images for miniatures
   const fallbackMiniatures = [
+    "https://i.imgur.com/xuzJAal.jpeg",
     "https://i.imgur.com/87YPfsX.jpeg",
     "https://i.imgur.com/0GC8OVi.jpeg", 
     "https://i.imgur.com/wdC2AZp.png",
