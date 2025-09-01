@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import ContentManager from '@/components/ContentManager';
+// Import direct du fichier
+import ContentManager from './ContentManager';
 
 interface AdminModalProps {
   isOpen: boolean;
