@@ -87,7 +87,8 @@ const HeroSection = () => {
   const menuItems = [
     { label: "Miniatures YouTube", path: "/miniatures", icon: "🎬" },
     { label: "Affiches Créatives", path: "/affiches", icon: "🎨" },
-    { label: "Autres Créations", path: "/autres", icon: "✨" }
+    { label: "Autres Créations", path: "/autres", icon: "✨" },
+    { label: "Me Contacter", path: "/contact", icon: "📧" }
   ];
 
   const handleMenuClick = (path: string) => {
