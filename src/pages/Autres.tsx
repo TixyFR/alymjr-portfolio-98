@@ -5,14 +5,7 @@ import { useContent } from '@/hooks/useContent';
 const Autres = () => {
   const { content, isLoading } = useContent('autres');
 
-  // Fallback images for autres
-  const fallbackAutres = [
-    "https://i.imgur.com/qnd1D2P.png",
-    "https://i.imgur.com/MS4deQ7.jpeg"
-  ];
-
   const dbImages = content.map(item => item.image_url);
-  const displayImages = [...dbImages, ...fallbackAutres];
 
   if (isLoading) {
     return (
@@ -34,7 +27,7 @@ const Autres = () => {
           id="autres-page"
           title="Autres Créations"
           description="Découvrez mes autres projets graphiques variés : logos, designs web, illustrations et créations artistiques diverses."
-          images={displayImages}
+          images={dbImages}
           columns={3}
         />
       </div>
