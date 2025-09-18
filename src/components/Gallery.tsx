@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface GalleryProps {
@@ -13,7 +13,19 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
+  // Memoize grid classes for better performance
+  const gridCols = useMemo(() => {
+    switch (columns) {
+      case 6: return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6';
+      case 5: return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5';
+      case 3: return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
+      default: return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+    }
+  }, [columns]);
+
+  // Optimized intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -21,7 +33,7 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
           setIsVisible(true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '50px' }
     );
 
     const element = document.getElementById(id);
@@ -32,26 +44,28 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
     return () => observer.disconnect();
   }, [id]);
 
-  const openLightbox = (image: string, index: number) => {
+  // Optimized lightbox functions
+  const openLightbox = useCallback((image: string, index: number) => {
     setSelectedImage(image);
     setSelectedIndex(index);
     document.body.style.overflow = 'hidden';
-  };
+  }, []);
 
-  const closeLightbox = () => {
+  const closeLightbox = useCallback(() => {
     setSelectedImage(null);
     document.body.style.overflow = 'unset';
-  };
+  }, []);
 
-  const navigateImage = (direction: 'prev' | 'next') => {
+  const navigateImage = useCallback((direction: 'prev' | 'next') => {
     const newIndex = direction === 'prev' 
       ? (selectedIndex - 1 + images.length) % images.length
       : (selectedIndex + 1) % images.length;
     
     setSelectedIndex(newIndex);
     setSelectedImage(images[newIndex]);
-  };
+  }, [selectedIndex, images]);
 
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (selectedImage) {
@@ -63,16 +77,49 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImage, selectedIndex]);
+  }, [selectedImage, navigateImage, closeLightbox]);
 
-  const getGridCols = () => {
-    switch (columns) {
-      case 6: return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6';
-      case 5: return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5';
-      case 3: return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
-      default: return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
-    }
-  };
+  // Optimized image loading
+  const handleImageLoad = useCallback((index: number) => {
+    setLoadedImages(prev => new Set([...prev, index]));
+  }, []);
+
+  // Memoized image component for better performance
+  const ImageComponent = useMemo(() => {
+    return images.map((image, index) => (
+      <div
+        key={`${image}-${index}`} // Better key for potential duplicates
+        className={`modern-card group cursor-pointer fade-up transition-all duration-300 hover:scale-[1.02] ${
+          isVisible ? 'visible' : ''
+        } ${loadedImages.has(index) ? 'opacity-100' : 'opacity-0'}`}
+        style={{ animationDelay: `${index * 30}ms` }} // Reduced delay for smoother loading
+        onClick={() => openLightbox(image, index)}
+      >
+        <div className="relative overflow-hidden rounded-lg">
+          <img
+            src={image}
+            alt={`${title} ${index + 1}`}
+            className={`w-full ${columns === 6 ? 'h-auto' : 'aspect-video'} object-cover image-hover transition-transform duration-500 group-hover:scale-110`}
+            loading="lazy"
+            decoding="async"
+            onLoad={() => handleImageLoad(index)}
+            onError={() => handleImageLoad(index)} // Still mark as "loaded" on error
+          />
+          
+          {/* Loading placeholder */}
+          {!loadedImages.has(index) && (
+            <div className="absolute inset-0 bg-muted animate-pulse rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
+          
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
+            <ZoomIn className="w-8 h-8 text-primary drop-shadow-lg" />
+          </div>
+        </div>
+      </div>
+    ));
+  }, [images, title, columns, isVisible, loadedImages, openLightbox, handleImageLoad]);
 
   return (
     <>
@@ -92,72 +139,74 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {description}
             </p>
+            <div className="mt-4 text-sm text-muted-foreground">
+              {images.length} image{images.length > 1 ? 's' : ''} disponible{images.length > 1 ? 's' : ''}
+            </div>
           </div>
 
           <div className="relative p-6 liquid-glass">
-            <div className={`grid ${getGridCols()} gap-6`}>
-              {images.map((image, index) => (
-                <div
-                  key={index}
-                  className={`modern-card group cursor-pointer fade-up ${
-                    isVisible ? 'visible' : ''
-                  }`}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                  onClick={() => openLightbox(image, index)}
-                >
-                  <img
-                    src={image}
-                    alt={`${title} ${index + 1}`}
-                    className={`w-full ${columns === 6 ? 'h-auto' : 'aspect-video'} object-cover image-hover rounded-lg`}
-                    loading="lazy"
-                  />
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
-                    <ZoomIn className="w-8 h-8 text-primary" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            {images.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-lg">Aucune image à afficher pour le moment.</p>
+              </div>
+            ) : (
+              <div className={`grid ${gridCols} gap-6`}>
+                {ImageComponent}
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Apple-style Lightbox */}
+      {/* Optimized Apple-style Lightbox */}
       {selectedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/98 backdrop-blur-2xl">
-          <div className="relative max-w-[90vw] max-h-[90vh] p-4">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/98 backdrop-blur-2xl"
+          onClick={closeLightbox}
+        >
+          <div className="relative max-w-[90vw] max-h-[90vh] p-4" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={closeLightbox}
               className="absolute -top-4 -right-4 z-10 p-3 liquid-glass hover:scale-110 transition-all duration-300"
+              aria-label="Fermer"
             >
               <X className="w-6 h-6" />
             </button>
             
-            <button
-              onClick={() => navigateImage('prev')}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 liquid-glass hover:scale-110 transition-all duration-300"
-            >
-              <ChevronLeft className="w-8 h-8" />
-            </button>
-            
-            <button
-              onClick={() => navigateImage('next')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 liquid-glass hover:scale-110 transition-all duration-300"
-            >
-              <ChevronRight className="w-8 h-8" />
-            </button>
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={() => navigateImage('prev')}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 liquid-glass hover:scale-110 transition-all duration-300"
+                  aria-label="Image précédente"
+                >
+                  <ChevronLeft className="w-8 h-8" />
+                </button>
+                
+                <button
+                  onClick={() => navigateImage('next')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 liquid-glass hover:scale-110 transition-all duration-300"
+                  aria-label="Image suivante"
+                >
+                  <ChevronRight className="w-8 h-8" />
+                </button>
+              </>
+            )}
             
             <div className="liquid-glass p-4">
               <img
                 src={selectedImage}
                 alt="Vue agrandie"
                 className="max-w-full max-h-full object-contain rounded-xl"
+                loading="eager"
               />
             </div>
             
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 liquid-glass px-4 py-2 text-sm">
-              {selectedIndex + 1} / {images.length}
-            </div>
+            {images.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 liquid-glass px-4 py-2 text-sm">
+                {selectedIndex + 1} / {images.length}
+              </div>
+            )}
           </div>
         </div>
       )}

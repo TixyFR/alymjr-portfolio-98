@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   const [visibleImages, setVisibleImages] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Toutes les images du site pour le carousel
@@ -91,8 +90,7 @@ const HeroSection = () => {
     { label: "Me Contacter", path: "/contact", icon: "📧" }
   ];
 
-  const handleMenuClick = (path: string) => {
-    navigate(path);
+  const handleMenuClick = () => {
     setShowDropdown(false);
   };
 
@@ -170,15 +168,16 @@ const HeroSection = () => {
                   {showDropdown && (
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 liquid-glass shadow-glow border border-primary/20 overflow-hidden z-50 animate-fade-in">
                       {menuItems.map((item, index) => (
-                        <button
+                        <Link
                           key={item.path}
-                          onClick={() => handleMenuClick(item.path)}
+                          to={item.path}
+                          onClick={handleMenuClick}
                           className="w-full text-left px-6 py-4 hover:bg-white/10 transition-all duration-300 flex items-center space-x-3 group liquid-hover"
                           style={{ animationDelay: `${index * 50}ms` }}
                         >
                           <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{item.icon}</span>
                           <span className="font-medium group-hover:text-primary transition-colors duration-200">{item.label}</span>
-                        </button>
+                        </Link>
                       ))}
                     </div>
                   )}

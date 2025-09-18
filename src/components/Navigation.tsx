@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Menu, X, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface NavigationProps {
   onAdminClick: () => void;
@@ -9,14 +9,9 @@ interface NavigationProps {
 
 const Navigation = ({ onAdminClick }: NavigationProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const navigateTo = (path: string) => {
-    navigate(path);
-    setIsOpen(false);
-  };
-
+  const closeMenu = () => setIsOpen(false);
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -31,38 +26,46 @@ const Navigation = ({ onAdminClick }: NavigationProps) => {
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <button
-                onClick={() => navigateTo('/')}
+              <Link
+                to="/"
                 className={`transition-colors duration-200 ${
                   isActive('/') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Accueil
-              </button>
-              <button
-                onClick={() => navigateTo('/miniatures')}
+              </Link>
+              <Link
+                to="/miniatures"
                 className={`transition-colors duration-200 ${
                   isActive('/miniatures') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Miniatures
-              </button>
-              <button
-                onClick={() => navigateTo('/affiches')}
+              </Link>
+              <Link
+                to="/affiches"
                 className={`transition-colors duration-200 ${
                   isActive('/affiches') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Affiches
-              </button>
-              <button
-                onClick={() => navigateTo('/autres')}
+              </Link>
+              <Link
+                to="/autres"
                 className={`transition-colors duration-200 ${
                   isActive('/autres') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Autres
-              </button>
+              </Link>
+              <Link
+                to="/contact"
+                className={`transition-colors duration-200 ${
+                  isActive('/contact') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
+                }`}
+              >
+                Contact
+              </Link>
             </div>
           </div>
 
@@ -94,40 +97,56 @@ const Navigation = ({ onAdminClick }: NavigationProps) => {
         {isOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <button
-                onClick={() => navigateTo('/')}
+              <Link
+                to="/"
+                onClick={closeMenu}
                 className={`block w-full text-left px-3 py-2 transition-colors ${
                   isActive('/') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Accueil
-              </button>
-              <button
-                onClick={() => navigateTo('/miniatures')}
+              </Link>
+              <Link
+                to="/miniatures"
+                onClick={closeMenu}
                 className={`block w-full text-left px-3 py-2 transition-colors ${
                   isActive('/miniatures') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Miniatures
-              </button>
-              <button
-                onClick={() => navigateTo('/affiches')}
+              </Link>
+              <Link
+                to="/affiches"
+                onClick={closeMenu}
                 className={`block w-full text-left px-3 py-2 transition-colors ${
                   isActive('/affiches') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Affiches
-              </button>
-              <button
-                onClick={() => navigateTo('/autres')}
+              </Link>
+              <Link
+                to="/autres"
+                onClick={closeMenu}
                 className={`block w-full text-left px-3 py-2 transition-colors ${
                   isActive('/autres') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
                 }`}
               >
                 Autres
-              </button>
+              </Link>
+              <Link
+                to="/contact"
+                onClick={closeMenu}
+                className={`block w-full text-left px-3 py-2 transition-colors ${
+                  isActive('/contact') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
+                }`}
+              >
+                Contact
+              </Link>
               <button
-                onClick={onAdminClick}
+                onClick={() => {
+                  onAdminClick();
+                  closeMenu();
+                }}
                 className="block w-full text-left px-3 py-2 text-foreground hover:text-primary transition-colors flex items-center space-x-2"
               >
                 <Settings className="w-4 h-4" />
