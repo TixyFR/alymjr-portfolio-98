@@ -3,11 +3,9 @@ import { Menu, X, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
 
-interface NavigationProps {
-  onAdminClick: () => void;
-}
+interface NavigationProps {}
 
-const Navigation = ({ onAdminClick }: NavigationProps) => {
+const Navigation = ({}: NavigationProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
@@ -71,16 +69,6 @@ const Navigation = ({ onAdminClick }: NavigationProps) => {
 
           {/* Admin Button & Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onAdminClick}
-              className="hidden md:flex items-center space-x-2"
-            >
-              <Settings className="w-4 h-4" />
-              <span>Admin</span>
-            </Button>
-
             {/* Mobile menu button */}
             <div className="md:hidden">
               <button
@@ -142,16 +130,6 @@ const Navigation = ({ onAdminClick }: NavigationProps) => {
               >
                 Contact
               </Link>
-              <button
-                onClick={() => {
-                  onAdminClick();
-                  closeMenu();
-                }}
-                className="block w-full text-left px-3 py-2 text-foreground hover:text-primary transition-colors flex items-center space-x-2"
-              >
-                <Settings className="w-4 h-4" />
-                <span>Admin</span>
-              </button>
             </div>
           </div>
         )}

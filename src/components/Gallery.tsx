@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MobileOptimizedImage } from '@/components/MobileOptimized';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface GalleryProps {
   id: string;
@@ -14,16 +16,23 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  const isMobile = useIsMobile();
+
+  // Responsive columns based on device
+  const displayColumns = isMobile ? Math.min(columns, 2) : columns;
 
   // Memoize grid classes for better performance
   const gridCols = useMemo(() => {
-    switch (columns) {
+    const cols = displayColumns;
+    switch (cols) {
       case 6: return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6';
       case 5: return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5';
       case 3: return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
+      case 2: return 'grid-cols-1 sm:grid-cols-2';
+      case 1: return 'grid-cols-1';
       default: return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
     }
-  }, [columns]);
+  }, [displayColumns]);
 
   // Optimized intersection observer
   useEffect(() => {
@@ -96,12 +105,10 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
         onClick={() => openLightbox(image, index)}
       >
         <div className="relative overflow-hidden rounded-lg">
-          <img
+          <MobileOptimizedImage
             src={image}
             alt={`${title} ${index + 1}`}
-            className={`w-full ${columns === 6 ? 'h-auto' : 'aspect-video'} object-cover image-hover transition-transform duration-500 group-hover:scale-110`}
-            loading="lazy"
-            decoding="async"
+            className={`w-full ${displayColumns === 6 ? 'h-auto' : 'aspect-video'} object-cover image-hover transition-transform duration-500 group-hover:scale-110`}
             onLoad={() => handleImageLoad(index)}
             onError={() => handleImageLoad(index)} // Still mark as "loaded" on error
           />
@@ -119,7 +126,7 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
         </div>
       </div>
     ));
-  }, [images, title, columns, isVisible, loadedImages, openLightbox, handleImageLoad]);
+  }, [images, title, displayColumns, isVisible, loadedImages, openLightbox, handleImageLoad]);
 
   return (
     <>
