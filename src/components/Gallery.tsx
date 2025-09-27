@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
-import { MobileOptimizedImage } from '@/components/MobileOptimized';
+import OptimizedImage from '@/components/OptimizedImage';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface GalleryProps {
@@ -105,12 +105,13 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
         onClick={() => openLightbox(image, index)}
       >
         <div className="relative overflow-hidden rounded-lg">
-          <MobileOptimizedImage
+          <OptimizedImage
             src={image}
             alt={`${title} ${index + 1}`}
             className={`w-full ${displayColumns === 6 ? 'h-auto' : 'aspect-video'} object-cover image-hover transition-transform duration-500 group-hover:scale-110`}
             onLoad={() => handleImageLoad(index)}
-            onError={() => handleImageLoad(index)} // Still mark as "loaded" on error
+            onError={() => handleImageLoad(index)}
+            lazy={true}
           />
           
           {/* Loading placeholder */}

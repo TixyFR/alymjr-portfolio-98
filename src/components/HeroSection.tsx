@@ -61,15 +61,8 @@ const HeroSection = () => {
   };
 
   useEffect(() => {
-    // Mélanger et re-mélanger les images périodiquement
-    const updateImages = () => {
-      setVisibleImages(shuffleArray(allImages));
-    };
-
-    updateImages();
-    const interval = setInterval(updateImages, 8000); // Re-mélange toutes les 8 secondes
-
-    return () => clearInterval(interval);
+    // Mélanger les images une seule fois au chargement pour éviter les re-renders
+    setVisibleImages(shuffleArray(allImages));
   }, []);
 
   useEffect(() => {
@@ -111,14 +104,16 @@ const HeroSection = () => {
                      animationDuration: `${Math.floor(Math.random() * 20) + 20}s` 
                    }}
                  >
-                   {[...shuffledForLine, ...shuffledForLine, ...shuffledForLine].map((src, imgIndex) => (
-                   <img
-                     key={`${lineIndex}-${imgIndex}`}
-                     src={src}
-                     alt="Portfolio preview"
-                     className="w-60 aspect-video object-cover rounded-xl opacity-20 hover:opacity-60 transition-all duration-500 hover:scale-105 hover:shadow-glow"
-                     />
-                   ))}
+                    {shuffledForLine.slice(0, 10).map((src, imgIndex) => (
+                    <img
+                      key={`${lineIndex}-${imgIndex}`}
+                      src={src}
+                      alt="Portfolio preview"
+                      className="w-60 aspect-video object-cover rounded-xl opacity-20 hover:opacity-60 transition-all duration-500 hover:scale-105 hover:shadow-glow"
+                      loading="lazy"
+                      decoding="async"
+                      />
+                    ))}
                 </div>
               </div>
             );

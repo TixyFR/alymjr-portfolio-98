@@ -1,44 +1,6 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 
-const DynamicBackground = () => {
-  const [particles, setParticles] = useState<Array<{
-    id: number;
-    x: number;
-    y: number;
-    size: number;
-    speedX: number;
-    speedY: number;
-    opacity: number;
-  }>>([]);
-
-  useEffect(() => {
-    // Créer des particules initiales
-    const initialParticles = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      size: Math.random() * 4 + 1,
-      speedX: (Math.random() - 0.5) * 2,
-      speedY: (Math.random() - 0.5) * 2,
-      opacity: Math.random() * 0.5 + 0.1,
-    }));
-
-    setParticles(initialParticles);
-
-    // Animation des particules
-    const animateParticles = () => {
-      setParticles((prev) =>
-        prev.map((particle) => ({
-          ...particle,
-          x: (particle.x + particle.speedX + window.innerWidth) % window.innerWidth,
-          y: (particle.y + particle.speedY + window.innerHeight) % window.innerHeight,
-        }))
-      );
-    };
-
-    const interval = setInterval(animateParticles, 50);
-    return () => clearInterval(interval);
-  }, []);
+const DynamicBackground = React.memo(() => {
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -50,21 +12,21 @@ const DynamicBackground = () => {
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
       <div className="absolute top-3/4 left-1/3 w-48 h-48 bg-primary-glow/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '4s' }} />
       
-      {/* Particules animées */}
-      {particles.map((particle) => (
-        <div
-          key={particle.id}
-          className="absolute w-1 h-1 bg-primary rounded-full"
-          style={{
-            left: particle.x,
-            top: particle.y,
-            width: particle.size,
-            height: particle.size,
-            opacity: particle.opacity,
-            transform: 'translate(-50%, -50%)',
-          }}
-        />
-      ))}
+      {/* Particules CSS animées - Performance optimisée */}
+      <div className="absolute inset-0">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-primary/30 rounded-full animate-float"
+            style={{
+              left: `${10 + (i * 12)}%`,
+              top: `${20 + (i * 8)}%`,
+              animationDelay: `${i * 2}s`,
+              animationDuration: `${8 + (i * 2)}s`,
+            }}
+          />
+        ))}
+      </div>
 
       {/* Lignes de connexion subtiles */}
       <div className="absolute inset-0">
@@ -83,6 +45,6 @@ const DynamicBackground = () => {
       </div>
     </div>
   );
-};
+});
 
 export default DynamicBackground;

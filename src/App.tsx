@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import React from "react";
 import Index from "./pages/Index";
 import Miniatures from "./pages/Miniatures";
 import Affiches from "./pages/Affiches";
@@ -37,7 +38,25 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-const App = () => (
+const App = () => {
+  // Preconnect to external domains for better performance
+  React.useEffect(() => {
+    const preconnectDomains = [
+      'https://i.imgur.com',
+      'https://rejotfqiomtyjjdbkchj.supabase.co'
+    ];
+
+    preconnectDomains.forEach(domain => {
+      const link = document.createElement('link');
+      link.rel = 'preconnect';
+      link.href = domain;
+      if (!document.querySelector(`link[href="${domain}"]`)) {
+        document.head.appendChild(link);
+      }
+    });
+  }, []);
+
+  return (
   <ErrorBoundary>
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
@@ -64,6 +83,7 @@ const App = () => (
       </QueryClientProvider>
     </ThemeProvider>
   </ErrorBoundary>
-);
+  );
+};
 
 export default App;

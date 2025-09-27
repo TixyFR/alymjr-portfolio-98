@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Performance optimizations */
+* {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+img {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 200px;
+}
+
 /* AlymJr Portfolio Design System - Inspired by stunning design aesthetics */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -283,8 +294,36 @@
     animation: scroll-left linear infinite;
   }
 
-  .carousel-right {
-    animation: scroll-right linear infinite;
+  /* Animation de fade moderne */
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Animation de float optimisée pour les particules */
+  @keyframes float {
+    0%, 100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+      transform: translate(20px, -20px) rotate(90deg);
+    }
+    50% {
+      transform: translate(-10px, -40px) rotate(180deg);
+    }
+    75% {
+      transform: translate(-30px, -10px) rotate(270deg);
+    }
+  }
+
+  .animate-float {
+    animation: float linear infinite;
   }
 
   /* Glass effect */
