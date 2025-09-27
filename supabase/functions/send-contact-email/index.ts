@@ -1,7 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+const supabase = createClient(
+  Deno.env.get("SUPABASE_URL") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,6 +34,25 @@ const handler = async (req: Request): Promise<Response> => {
     const { name, email, subject, message }: ContactEmailRequest = await req.json();
     
     console.log("Received contact form:", { name, email, subject: subject || "Nouveau message", message: message.substring(0, 100) + "..." });
+
+    // Save to database first
+    const { data: savedMessage, error: dbError } = await supabase
+      .from('contact_messages')
+      .insert({
+        name,
+        email,
+        subject: subject || null,
+        message
+      })
+      .select()
+      .single();
+
+    if (dbError) {
+      console.error("Error saving to database:", dbError);
+      throw new Error(`Database error: ${dbError.message}`);
+    }
+
+    console.log("Message saved to database:", savedMessage.id);
 
     // Send email to AlymJr
     const emailResponse = await resend.emails.send({

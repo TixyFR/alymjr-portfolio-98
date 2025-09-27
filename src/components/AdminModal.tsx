@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 // Import direct du fichier
 import ContentManager from './ContentManager';
+import ContactMessagesManager from './ContactMessagesManager';
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -112,6 +113,10 @@ const AdminModal = ({ isOpen, onClose }: AdminModalProps) => {
               </div>
 
               <ContentManager />
+
+              <div className="border-t pt-6">
+                <ContactMessagesManager />
+              </div>
 
               <Button 
                 onClick={handleLogout}
