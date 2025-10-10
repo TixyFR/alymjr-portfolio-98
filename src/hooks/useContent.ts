@@ -39,7 +39,12 @@ export const useContent = (category?: string) => {
     }
   }, [category]);
 
-  const addContent = useCallback(async (item: { image_url: string; category?: string }) => {
+  const addContent = useCallback(async (item: { 
+    image_url?: string; 
+    category?: string;
+    before_image_url?: string;
+    after_image_url?: string;
+  }) => {
     try {
       // Get max order for this category
       const { data: maxOrderData } = await supabase
@@ -52,14 +57,30 @@ export const useContent = (category?: string) => {
 
       const newOrder = (maxOrderData?.display_order || 0) + 1;
 
+      const insertData: any = {
+        title: `${item.category || 'miniature'} - ${Date.now()}`,
+        category: item.category || 'miniatures',
+        display_order: newOrder,
+      };
+
+      // Add regular image or before/after images
+      if (item.image_url) {
+        insertData.image_url = item.image_url;
+      } else {
+        insertData.image_url = item.before_image_url || ''; // Fallback for required field
+      }
+
+      if (item.before_image_url) {
+        insertData.before_image_url = item.before_image_url;
+      }
+      
+      if (item.after_image_url) {
+        insertData.after_image_url = item.after_image_url;
+      }
+
       const { data, error } = await supabase
         .from('miniatures')
-        .insert([{ 
-          image_url: item.image_url, 
-          title: `${item.category || 'miniature'} - ${Date.now()}`,
-          category: item.category || 'miniatures',
-          display_order: newOrder,
-        }])
+        .insert([insertData])
         .select()
         .single();
 

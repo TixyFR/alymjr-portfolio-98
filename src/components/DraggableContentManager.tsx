@@ -81,7 +81,9 @@ const DraggableContentManager = () => {
   const { content, isLoading, addContent, deleteContent, reorderContent } = useContent();
   const [newItem, setNewItem] = useState({
     image_url: '',
-    category: 'miniatures'
+    category: 'miniatures',
+    before_image_url: '',
+    after_image_url: ''
   });
 
   const sensors = useSensors(
@@ -92,14 +94,20 @@ const DraggableContentManager = () => {
   );
 
   const handleAdd = async () => {
-    if (!newItem.image_url) return;
+    if (newItem.category === 'entrainement') {
+      if (!newItem.before_image_url || !newItem.after_image_url) return;
+    } else {
+      if (!newItem.image_url) return;
+    }
 
     try {
-      await addContent({ 
-        image_url: newItem.image_url, 
-        category: newItem.category 
+      await addContent(newItem);
+      setNewItem({ 
+        image_url: '', 
+        category: 'miniatures',
+        before_image_url: '',
+        after_image_url: ''
       });
-      setNewItem({ image_url: '', category: 'miniatures' });
     } catch (error) {
       // Error handled in hook
     }
@@ -170,11 +178,6 @@ const DraggableContentManager = () => {
         <CardContent className="p-6">
           <h3 className="text-lg font-semibold mb-4">Ajouter une image</h3>
           <div className="space-y-4">
-            <Input
-              placeholder="URL de l'image"
-              value={newItem.image_url}
-              onChange={(e) => setNewItem(prev => ({ ...prev, image_url: e.target.value }))}
-            />
             <Select
               value={newItem.category}
               onValueChange={(value) => setNewItem(prev => ({ ...prev, category: value }))}
@@ -189,6 +192,28 @@ const DraggableContentManager = () => {
                 <SelectItem value="entrainement">Entrainement</SelectItem>
               </SelectContent>
             </Select>
+            
+            {newItem.category === 'entrainement' ? (
+              <>
+                <Input
+                  placeholder="URL de l'image AVANT"
+                  value={newItem.before_image_url}
+                  onChange={(e) => setNewItem(prev => ({ ...prev, before_image_url: e.target.value }))}
+                />
+                <Input
+                  placeholder="URL de l'image APRÈS"
+                  value={newItem.after_image_url}
+                  onChange={(e) => setNewItem(prev => ({ ...prev, after_image_url: e.target.value }))}
+                />
+              </>
+            ) : (
+              <Input
+                placeholder="URL de l'image"
+                value={newItem.image_url}
+                onChange={(e) => setNewItem(prev => ({ ...prev, image_url: e.target.value }))}
+              />
+            )}
+            
             <Button onClick={handleAdd} className="w-full bg-gradient-primary">
               <Plus className="w-4 h-4 mr-2" />
               Ajouter

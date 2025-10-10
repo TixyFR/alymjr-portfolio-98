@@ -49,6 +49,8 @@ export type Database = {
       }
       miniatures: {
         Row: {
+          after_image_url: string | null
+          before_image_url: string | null
           category: string | null
           created_at: string
           description: string | null
@@ -59,6 +61,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          after_image_url?: string | null
+          before_image_url?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
@@ -69,6 +73,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          after_image_url?: string | null
+          before_image_url?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
