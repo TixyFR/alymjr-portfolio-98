@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Miniatures from "./pages/Miniatures";
 import Affiches from "./pages/Affiches";
 import Autres from "./pages/Autres";
+import Entrainement from "./pages/Entrainement";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
@@ -74,6 +75,7 @@ const App = () => {
               <Route path="/miniatures" element={<Miniatures />} />
               <Route path="/affiches" element={<Affiches />} />
               <Route path="/autres" element={<Autres />} />
+              <Route path="/entrainement" element={<Entrainement />} />
               <Route path="/contact" element={<Contact />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

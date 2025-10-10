@@ -57,6 +57,14 @@ const Navigation = ({}: NavigationProps) => {
                 Autres
               </Link>
               <Link
+                to="/entrainement"
+                className={`transition-colors duration-200 ${
+                  isActive('/entrainement') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
+                }`}
+              >
+                Entrainement
+              </Link>
+              <Link
                 to="/contact"
                 className={`transition-colors duration-200 ${
                   isActive('/contact') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
@@ -120,6 +128,15 @@ const Navigation = ({}: NavigationProps) => {
                 }`}
               >
                 Autres
+              </Link>
+              <Link
+                to="/entrainement"
+                onClick={closeMenu}
+                className={`block w-full text-left px-3 py-2 transition-colors ${
+                  isActive('/entrainement') ? 'text-primary font-medium' : 'text-foreground hover:text-primary'
+                }`}
+              >
+                Entrainement
               </Link>
               <Link
                 to="/contact"

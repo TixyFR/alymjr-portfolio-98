@@ -16,6 +16,7 @@ export const useContent = (category?: string) => {
       let query = supabase
         .from('miniatures')
         .select('*')
+        .order('display_order', { ascending: true })
         .order('created_at', { ascending: false });
 
       // Server-side filtering for better performance
@@ -40,12 +41,24 @@ export const useContent = (category?: string) => {
 
   const addContent = useCallback(async (item: { image_url: string; category?: string }) => {
     try {
+      // Get max order for this category
+      const { data: maxOrderData } = await supabase
+        .from('miniatures')
+        .select('display_order')
+        .eq('category', item.category || 'miniatures')
+        .order('display_order', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const newOrder = (maxOrderData?.display_order || 0) + 1;
+
       const { data, error } = await supabase
         .from('miniatures')
         .insert([{ 
           image_url: item.image_url, 
           title: `${item.category || 'miniature'} - ${Date.now()}`,
-          category: item.category || 'miniatures'
+          category: item.category || 'miniatures',
+          display_order: newOrder,
         }])
         .select()
         .single();
@@ -83,6 +96,28 @@ export const useContent = (category?: string) => {
       toast.error('Erreur lors de la suppression');
       // Refetch to restore state on error
       fetchContent();
+      throw error;
+    }
+  }, [fetchContent]);
+
+  const reorderContent = useCallback(async (items: Array<{ id: string; display_order: number }>) => {
+    try {
+      // Update all items in parallel
+      const updates = items.map(item =>
+        supabase
+          .from('miniatures')
+          .update({ display_order: item.display_order })
+          .eq('id', item.id)
+      );
+
+      await Promise.all(updates);
+      
+      // Refetch to get updated order
+      await fetchContent();
+      toast.success('Ordre mis à jour');
+    } catch (error) {
+      console.error('Erreur lors de la réorganisation:', error);
+      toast.error('Erreur lors de la mise à jour de l\'ordre');
       throw error;
     }
   }, [fetchContent]);
@@ -146,6 +181,7 @@ export const useContent = (category?: string) => {
     error,
     addContent,
     deleteContent,
+    reorderContent,
     refetch: fetchContent
   };
 };

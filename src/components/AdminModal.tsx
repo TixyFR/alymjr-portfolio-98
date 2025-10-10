@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 // Import direct du fichier
-import ContentManager from './ContentManager';
+import DraggableContentManager from './DraggableContentManager';
 import ContactMessagesManager from './ContactMessagesManager';
 
 interface AdminModalProps {
@@ -112,7 +112,7 @@ const AdminModal = ({ isOpen, onClose }: AdminModalProps) => {
                 <p className="text-muted-foreground">Panel d'administration</p>
               </div>
 
-              <ContentManager />
+              <DraggableContentManager />
 
               <div className="border-t pt-6">
                 <ContactMessagesManager />
