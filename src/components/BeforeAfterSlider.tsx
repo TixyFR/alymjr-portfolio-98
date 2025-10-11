@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import OptimizedImage from './OptimizedImage';
 
@@ -16,14 +15,7 @@ interface BeforeAfterSliderProps {
 }
 
 const BeforeAfterSlider = ({ items }: BeforeAfterSliderProps) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
-    loop: true,
-    align: 'center',
-    skipSnaps: false
-  });
-
-  const scrollPrev = () => emblaApi?.scrollPrev();
-  const scrollNext = () => emblaApi?.scrollNext();
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   if (!items || items.length === 0) {
     return (
@@ -33,41 +25,79 @@ const BeforeAfterSlider = ({ items }: BeforeAfterSliderProps) => {
     );
   }
 
+  const handlePrev = () => {
+    if (selectedIndex === null) return;
+    setSelectedIndex(selectedIndex === 0 ? items.length - 1 : selectedIndex - 1);
+  };
+
+  const handleNext = () => {
+    if (selectedIndex === null) return;
+    setSelectedIndex(selectedIndex === items.length - 1 ? 0 : selectedIndex + 1);
+  };
+
   return (
-    <div className="relative">
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex">
-          {items.map((item) => (
-            <div key={item.id} className="flex-[0_0_100%] min-w-0 px-4">
-              <BeforeAfterComparison
-                beforeImage={item.before_image_url}
-                afterImage={item.after_image_url}
-                title={item.title}
-              />
+    <div className="space-y-8">
+      {/* Grid of "After" thumbnails */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {items.map((item, index) => (
+          <div
+            key={item.id}
+            className="relative group cursor-pointer overflow-hidden rounded-lg aspect-video bg-muted hover:scale-105 transition-transform"
+            onClick={() => setSelectedIndex(index)}
+          >
+            <OptimizedImage
+              src={item.after_image_url}
+              alt={`Après - ${item.title}`}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span className="text-white font-semibold">Voir avant/après</span>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
-      {items.length > 1 && (
-        <>
+      {/* Full screen modal for before/after comparison */}
+      {selectedIndex !== null && (
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4">
           <Button
             variant="outline"
             size="icon"
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur"
-            onClick={scrollPrev}
+            className="absolute top-4 right-4 z-20"
+            onClick={() => setSelectedIndex(null)}
           >
-            <ChevronLeft className="w-4 h-4" />
+            <X className="w-4 h-4" />
           </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur"
-            onClick={scrollNext}
-          >
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        </>
+
+          <div className="relative w-full max-w-6xl">
+            <BeforeAfterComparison
+              beforeImage={items[selectedIndex].before_image_url}
+              afterImage={items[selectedIndex].after_image_url}
+              title={items[selectedIndex].title}
+            />
+
+            {items.length > 1 && (
+              <>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur"
+                  onClick={handlePrev}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur"
+                  onClick={handleNext}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import { useContent } from '@/hooks/useContent';
 const Affiches = () => {
   const { content, isLoading } = useContent('affiches');
 
-  const dbImages = content.map(item => item.image_url);
+  const dbImages = content.map(item => item.image_url).reverse();
 
   if (isLoading) {
     return (
