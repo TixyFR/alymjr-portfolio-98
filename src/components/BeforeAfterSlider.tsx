@@ -94,20 +94,23 @@ const BeforeAfterComparison = ({ beforeImage, afterImage, title }: BeforeAfterCo
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
+    e.preventDefault();
+    e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
     handleMove(e.clientX, rect);
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
     handleMove(e.touches[0].clientX, rect);
   };
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h3 className="text-2xl font-bold text-center mb-6">{title}</h3>
       <div
-        className="relative select-none overflow-hidden rounded-lg aspect-video bg-muted"
+        className="relative select-none overflow-hidden rounded-lg aspect-video bg-muted touch-none"
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}

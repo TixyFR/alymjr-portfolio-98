@@ -5,7 +5,7 @@ import { useContent } from '@/hooks/useContent';
 const Entrainement = () => {
   const { content, isLoading } = useContent('entrainement');
 
-  // Filter items with before/after images
+  // Filter items with before/after images and reverse order (newest first)
   const beforeAfterItems = content
     .filter(item => item.before_image_url && item.after_image_url)
     .map(item => ({
@@ -13,7 +13,8 @@ const Entrainement = () => {
       before_image_url: item.before_image_url!,
       after_image_url: item.after_image_url!,
       title: item.title
-    }));
+    }))
+    .reverse();
 
   if (isLoading) {
     return (
@@ -32,13 +33,6 @@ const Entrainement = () => {
     <Layout>
       <div className="pt-20 pb-20">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Entrainement</h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Mes exercices et projets d'entrainement en design graphique. 
-              Faites glisser le curseur pour voir l'évolution avant/après.
-            </p>
-          </div>
           <BeforeAfterSlider items={beforeAfterItems} />
         </div>
       </div>
