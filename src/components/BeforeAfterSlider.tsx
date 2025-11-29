@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Sparkles } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
 
 interface BeforeAfterItem {
@@ -19,7 +19,7 @@ const BeforeAfterSlider = ({ items }: BeforeAfterSliderProps) => {
   if (!items || items.length === 0) {
     return (
       <div className="text-center py-32">
-        <p className="text-muted-foreground font-light">Aucun exercice disponible</p>
+        <p className="text-muted-foreground font-medium">No training available</p>
       </div>
     );
   }
@@ -35,51 +35,55 @@ const BeforeAfterSlider = ({ items }: BeforeAfterSliderProps) => {
   };
 
   return (
-    <div className="space-y-12">
-      {/* Title Section */}
-      <div className="text-center space-y-6">
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight">
-          Entrainement
+    <div className="space-y-16">
+      {/* Header */}
+      <div className="text-center space-y-8">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter">
+          <span className="gradient-neon">Training</span>
         </h2>
-        <div className="h-px w-16 bg-border mx-auto" />
-        <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-light leading-relaxed">
-          Cliquez sur une image pour voir l'évolution
+        <div className="flex items-center justify-center gap-6">
+          <div className="h-1 w-16 bg-gradient-to-r from-transparent via-neon-cyan to-transparent" />
+          <p className="text-sm text-muted-foreground tracking-[0.2em] uppercase font-bold">
+            Before & After
+          </p>
+          <div className="h-1 w-16 bg-gradient-to-r from-transparent via-neon-magenta to-transparent" />
+        </div>
+        <p className="text-base md:text-lg text-foreground/70 max-w-xl mx-auto font-medium">
+          Click to see the evolution
         </p>
       </div>
 
-      {/* Grid of thumbnails */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
+      {/* Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
         {items.map((item, index) => (
           <div
             key={item.id}
-            className="zen-card group cursor-pointer overflow-hidden fade-up visible"
+            className="glass-card group cursor-pointer overflow-hidden hover-3d fade-up visible"
             style={{ animationDelay: `${index * 50}ms` }}
             onClick={() => setSelectedIndex(index)}
           >
-            <div className="relative overflow-hidden rounded-md aspect-video">
+            <div className="relative overflow-hidden rounded-xl aspect-video">
               <OptimizedImage
                 src={item.after_image_url}
-                alt={`Après - ${item.title}`}
+                alt={`After - ${item.title}`}
                 className="w-full h-full object-cover image-hover"
               />
-              <div className="absolute inset-0 bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <span className="text-xs tracking-wider uppercase text-foreground font-light">
-                  Voir l'évolution
-                </span>
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                <Sparkles className="w-8 h-8 text-white neon-glow-primary" />
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Full screen comparison modal */}
+      {/* Full screen modal */}
       {selectedIndex !== null && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-6">
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex items-center justify-center p-6">
           <button
-            className="absolute top-6 right-6 z-20 p-2 glass hover:bg-card transition-colors rounded-md"
+            className="absolute top-6 right-6 z-20 p-3 glass-card hover:bg-primary/20 transition-all rounded-2xl"
             onClick={() => setSelectedIndex(null)}
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
 
           <div className="relative w-full max-w-6xl">
@@ -92,16 +96,16 @@ const BeforeAfterSlider = ({ items }: BeforeAfterSliderProps) => {
             {items.length > 1 && (
               <>
                 <button
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 glass-card hover:bg-primary/20 transition-all rounded-2xl"
                   onClick={handlePrev}
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-6 h-6" />
                 </button>
                 <button
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 glass-card hover:bg-primary/20 transition-all rounded-2xl"
                   onClick={handleNext}
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-6 h-6" />
                 </button>
               </>
             )}
@@ -147,9 +151,9 @@ const BeforeAfterComparison = ({ beforeImage, afterImage, title }: BeforeAfterCo
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-4">
+    <div className="max-w-5xl mx-auto">
       <div
-        className="relative select-none overflow-hidden rounded-md aspect-video bg-muted touch-none zen-card"
+        className="relative select-none overflow-hidden rounded-2xl aspect-video bg-muted/30 touch-none glass-card"
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
@@ -160,11 +164,11 @@ const BeforeAfterComparison = ({ beforeImage, afterImage, title }: BeforeAfterCo
         <div className="absolute inset-0">
           <OptimizedImage
             src={afterImage}
-            alt="Après"
+            alt="After"
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-4 right-4 px-3 py-1 rounded-md glass text-xs tracking-wider uppercase">
-            Après
+          <div className="absolute top-6 right-6 px-4 py-2 rounded-xl glass-card text-sm font-bold tracking-wider uppercase neon-glow-cyan">
+            <span className="text-neon-cyan">After</span>
           </div>
         </div>
 
@@ -175,24 +179,24 @@ const BeforeAfterComparison = ({ beforeImage, afterImage, title }: BeforeAfterCo
         >
           <OptimizedImage
             src={beforeImage}
-            alt="Avant"
+            alt="Before"
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-4 left-4 px-3 py-1 rounded-md glass text-xs tracking-wider uppercase">
-            Avant
+          <div className="absolute top-6 left-6 px-4 py-2 rounded-xl glass-card text-sm font-bold tracking-wider uppercase neon-glow-magenta">
+            <span className="text-neon-magenta">Before</span>
           </div>
         </div>
 
         {/* Slider */}
         <div
-          className="absolute top-0 bottom-0 w-0.5 bg-primary cursor-ew-resize"
+          className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize neon-glow-primary"
           style={{ left: `${sliderPosition}%` }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleMouseDown}
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-full shadow-lg flex items-center justify-center">
-            <ChevronLeft className="w-3 h-3 text-primary-foreground absolute left-2" />
-            <ChevronRight className="w-3 h-3 text-primary-foreground absolute right-2" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-primary rounded-full shadow-neon flex items-center justify-center hover:scale-125 transition-transform">
+            <ChevronLeft className="w-4 h-4 text-primary-foreground absolute left-2" />
+            <ChevronRight className="w-4 h-4 text-primary-foreground absolute right-2" />
           </div>
         </div>
       </div>

@@ -52,22 +52,23 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				neon: {
+					cyan: 'hsl(var(--neon-cyan))',
+					magenta: 'hsl(var(--neon-magenta))',
+					purple: 'hsl(var(--neon-purple))',
+					blue: 'hsl(var(--neon-blue))'
 				}
 			},
-			backgroundImage: {
-				'gradient-hero': 'var(--gradient-hero)',
-				'gradient-card': 'var(--gradient-card)',
-				'gradient-primary': 'var(--gradient-primary)',
-				'gradient-glow': 'var(--gradient-glow)'
-			},
 			boxShadow: {
-				'primary': 'var(--shadow-primary)',
-				'glow': 'var(--shadow-glow)',
-				'card': 'var(--shadow-card)'
+				'glass': 'var(--shadow-glass)',
+				'neon': 'var(--shadow-neon)',
+				'glow-cyan': 'var(--glow-cyan)',
+				'glow-magenta': 'var(--glow-magenta)'
 			},
 			transitionTimingFunction: {
-				'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
-				'bounce': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+				'dramatic': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+				'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -90,11 +91,48 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float-dramatic': {
+					'0%, 100%': {
+						transform: 'translateY(0) rotate(0deg)'
+					},
+					'25%': {
+						transform: 'translateY(-30px) rotate(5deg)'
+					},
+					'50%': {
+						transform: 'translateY(-50px) rotate(-5deg)'
+					},
+					'75%': {
+						transform: 'translateY(-30px) rotate(5deg)'
+					}
+				},
+				'pulse-neon': {
+					'0%, 100%': {
+						opacity: '1',
+						filter: 'drop-shadow(0 0 5px currentColor)'
+					},
+					'50%': {
+						opacity: '0.8',
+						filter: 'drop-shadow(0 0 20px currentColor)'
+					}
+				},
+				'slide-in-up': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(100px) scale(0.9)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0) scale(1)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float-dramatic': 'float-dramatic 6s ease-in-out infinite',
+				'pulse-neon': 'pulse-neon 2s ease-in-out infinite',
+				'slide-in-up': 'slide-in-up 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards'
 			}
 		}
 	},
