@@ -26,10 +26,10 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Hidden Admin Button */}
       <button
         onClick={() => setIsAdminModalOpen(true)}
-        className="fixed bottom-6 right-6 z-40 p-3 glass-card opacity-20 hover:opacity-100 transition-all rounded-2xl hover:scale-110"
+        className="fixed bottom-6 right-6 z-40 p-2 glass opacity-20 hover:opacity-100 transition-opacity rounded-md"
         aria-label="Admin"
       >
-        <Settings className="h-5 w-5" />
+        <Settings className="h-4 w-4" />
       </button>
       
       {children}

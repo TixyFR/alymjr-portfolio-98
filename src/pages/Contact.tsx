@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Send, User, Zap } from 'lucide-react';
+import { Mail, Send, User, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,11 +32,11 @@ const Contact = () => {
 
       if (error) throw error;
 
-      toast.success('Message sent successfully!');
+      toast.success('Message envoyé avec succès !');
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
-      console.error('Error sending:', error);
-      toast.error('Error sending message');
+      console.error('Erreur lors de l\'envoi:', error);
+      toast.error('Erreur lors de l\'envoi du message');
     } finally {
       setIsLoading(false);
     }
@@ -52,45 +52,39 @@ const Contact = () => {
   return (
     <Layout>
       <div className="pt-32 pb-24 min-h-screen px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-20 space-y-8">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter">
-              <span className="gradient-neon">Contact</span>
+          <div className="text-center mb-20 space-y-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight">
+              Contact
             </h1>
-            <div className="flex items-center justify-center gap-6">
-              <div className="h-1 w-16 bg-gradient-to-r from-transparent via-neon-cyan to-transparent" />
-              <p className="text-sm text-muted-foreground tracking-[0.2em] uppercase font-bold">
-                Let's Work Together
-              </p>
-              <div className="h-1 w-16 bg-gradient-to-r from-transparent via-neon-magenta to-transparent" />
-            </div>
-            <p className="text-base md:text-lg text-foreground/70 max-w-xl mx-auto font-medium">
-              Have a project in mind? Let's create something amazing
+            <div className="h-px w-16 bg-border mx-auto" />
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-light leading-relaxed">
+              Vous avez un projet ? N'hésitez pas à me contacter
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div className="glass-card p-8">
+            <div className="zen-card p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold text-foreground mb-2 uppercase tracking-wider">
-                    Name
+                  <label className="block text-sm font-light text-muted-foreground mb-2">
+                    Nom
                   </label>
                   <Input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Your name"
+                    placeholder="Votre nom"
                     required
-                    className="glass-card border-border/50 focus:border-primary transition-all"
+                    className="bg-muted/50 border-border"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-foreground mb-2 uppercase tracking-wider">
+                  <label className="block text-sm font-light text-muted-foreground mb-2">
                     Email
                   </label>
                   <Input
@@ -98,109 +92,97 @@ const Contact = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="your@email.com"
+                    placeholder="votre@email.com"
                     required
-                    className="glass-card border-border/50 focus:border-primary transition-all"
+                    className="bg-muted/50 border-border"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-foreground mb-2 uppercase tracking-wider">
-                    Subject
+                  <label className="block text-sm font-light text-muted-foreground mb-2">
+                    Sujet
                   </label>
                   <Input
                     type="text"
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    placeholder="Subject"
-                    className="glass-card border-border/50 focus:border-primary transition-all"
+                    placeholder="Sujet du message"
+                    className="bg-muted/50 border-border"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-foreground mb-2 uppercase tracking-wider">
+                  <label className="block text-sm font-light text-muted-foreground mb-2">
                     Message
                   </label>
                   <Textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Your message..."
+                    placeholder="Votre message..."
                     rows={6}
                     required
-                    className="glass-card border-border/50 focus:border-primary transition-all resize-none"
+                    className="bg-muted/50 border-border resize-none"
                   />
                 </div>
 
-                <button 
+                <Button 
                   type="submit" 
                   disabled={isLoading}
-                  className="neon-button w-full inline-flex items-center justify-center gap-3"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-12 group"
                 >
                   {isLoading ? (
-                    <>
-                      <div className="animate-spin w-5 h-5 border-2 border-current border-t-transparent rounded-full" />
-                      <span>Sending...</span>
-                    </>
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
+                      <span>Envoi en cours...</span>
+                    </div>
                   ) : (
-                    <>
-                      <span>Send Message</span>
-                      <Zap className="w-5 h-5" />
-                    </>
+                    <div className="flex items-center gap-2">
+                      <span>Envoyer</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   )}
-                </button>
+                </Button>
               </form>
             </div>
 
             {/* Contact Info */}
             <div className="space-y-6">
-              <div className="glass-card p-8 space-y-6 hover-3d">
-                <h3 className="text-xl font-black uppercase tracking-wider">Information</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <Mail className="w-6 h-6 text-neon-cyan neon-glow-cyan flex-shrink-0 mt-1" />
+              <div className="zen-card p-8 space-y-6">
+                <h3 className="text-xl font-normal">Informations</h3>
+                <div className="space-y-4 text-sm">
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Email</p>
-                      <p className="text-foreground font-bold">contact@alymjr.fr</p>
+                      <p className="text-muted-foreground font-light">Email</p>
+                      <p className="text-foreground">contact@alymjr.fr</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <User className="w-6 h-6 text-neon-magenta neon-glow-magenta flex-shrink-0 mt-1" />
+                  <div className="flex items-start gap-3">
+                    <User className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Designer</p>
-                      <p className="text-foreground font-bold">AlymJr</p>
+                      <p className="text-muted-foreground font-light">Designer</p>
+                      <p className="text-foreground">AlymJr</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="glass-card p-8 space-y-4 hover-3d">
-                <h3 className="text-xl font-black uppercase tracking-wider">Services</h3>
-                <ul className="space-y-2 text-sm font-medium text-foreground/70">
-                  <li className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-neon-cyan rounded-full neon-glow-cyan" />
-                    YouTube Thumbnails
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-neon-magenta rounded-full neon-glow-magenta" />
-                    Creative Posters
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full neon-glow-primary" />
-                    Visual Identity
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-accent rounded-full" />
-                    Social Media Designs
-                  </li>
+              <div className="zen-card p-8 space-y-4">
+                <h3 className="text-xl font-normal">Services</h3>
+                <ul className="space-y-2 text-sm font-light text-muted-foreground">
+                  <li>Miniatures YouTube</li>
+                  <li>Affiches créatives</li>
+                  <li>Identité visuelle</li>
+                  <li>Designs pour réseaux sociaux</li>
                 </ul>
               </div>
 
-              <div className="glass-card p-8 space-y-4 hover-3d">
-                <h3 className="text-xl font-black uppercase tracking-wider">Response Time</h3>
-                <p className="text-sm font-medium text-foreground/70 leading-relaxed">
-                  I typically respond within 24h. For urgent projects, please mention it in your message.
+              <div className="zen-card p-8 space-y-4">
+                <h3 className="text-xl font-normal">Réponse</h3>
+                <p className="text-sm font-light text-muted-foreground leading-relaxed">
+                  Je réponds généralement sous 24h. Pour les projets urgents, mentionnez-le dans votre message.
                 </p>
               </div>
             </div>

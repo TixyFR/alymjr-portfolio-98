@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -91,13 +91,13 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
     return images.map((image, index) => (
       <div
         key={`${image}-${index}`}
-        className={`glass-card group cursor-pointer overflow-hidden fade-up ${
+        className={`zen-card group cursor-pointer overflow-hidden fade-up ${
           isVisible ? 'visible' : ''
         } ${loadedImages.has(index) ? 'opacity-100' : 'opacity-0'}`}
         style={{ animationDelay: `${index * 50}ms` }}
         onClick={() => openLightbox(image, index)}
       >
-        <div className="relative overflow-hidden rounded-xl aspect-video">
+        <div className="relative overflow-hidden rounded-md aspect-video">
           <OptimizedImage
             src={image}
             alt={`${title} ${index + 1}`}
@@ -108,14 +108,12 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
           />
           
           {!loadedImages.has(index) && (
-            <div className="absolute inset-0 bg-muted/30 backdrop-blur-sm animate-pulse rounded-xl flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="absolute inset-0 bg-muted animate-pulse rounded-md flex items-center justify-center">
+              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           )}
           
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-            <Maximize2 className="w-10 h-10 text-white neon-glow-primary transform scale-0 group-hover:scale-100 transition-transform duration-500" />
-          </div>
+          <div className="absolute inset-0 bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
       </div>
     ));
@@ -130,83 +128,78 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
         }`}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20 space-y-8">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter">
-              <span className="gradient-neon">{title}</span>
+          <div className="text-center mb-20 space-y-6">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight">
+              {title}
             </h2>
-            <div className="flex items-center justify-center gap-6">
-              <div className="h-1 w-16 bg-gradient-to-r from-transparent via-neon-cyan to-transparent" />
-              <p className="text-sm text-muted-foreground tracking-[0.2em] uppercase font-bold">
-                {images.length} Works
-              </p>
-              <div className="h-1 w-16 bg-gradient-to-r from-transparent via-neon-magenta to-transparent" />
-            </div>
-            <p className="text-base md:text-lg text-foreground/70 max-w-xl mx-auto font-medium">
+            <div className="h-px w-16 bg-border mx-auto" />
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-light leading-relaxed">
               {description}
             </p>
+            <div className="text-xs text-muted-foreground/70 font-light tracking-wider">
+              {images.length} {images.length > 1 ? 'images' : 'image'}
+            </div>
           </div>
 
           {images.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-muted-foreground font-medium">No images available</p>
+              <p className="text-muted-foreground font-light">Aucune image disponible</p>
             </div>
           ) : (
-            <div className={`grid ${gridCols} gap-6`}>
+            <div className={`grid ${gridCols} gap-4`}>
               {ImageComponent}
             </div>
           )}
         </div>
       </section>
 
-      {/* Futuristic Lightbox */}
+      {/* Lightbox */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-xl"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm"
           onClick={closeLightbox}
         >
           <div className="relative max-w-[90vw] max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={closeLightbox}
-              className="absolute -top-16 right-0 z-10 p-3 glass-card hover:bg-primary/20 transition-all rounded-2xl neon-button"
-              aria-label="Close"
+              className="absolute -top-14 right-0 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+              aria-label="Fermer"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
             
             {images.length > 1 && (
               <>
                 <button
                   onClick={() => navigateImage('prev')}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 glass-card hover:bg-primary/20 transition-all rounded-2xl"
-                  aria-label="Previous"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+                  aria-label="Image précédente"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
                 
                 <button
                   onClick={() => navigateImage('next')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 glass-card hover:bg-primary/20 transition-all rounded-2xl"
-                  aria-label="Next"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+                  aria-label="Image suivante"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               </>
             )}
             
-            <div className="glass-card p-4">
+            <div className="zen-card p-4">
               <img
                 src={selectedImage}
-                alt="Full view"
-                className="max-w-full max-h-[85vh] object-contain rounded-xl"
+                alt="Vue agrandie"
+                className="max-w-full max-h-[85vh] object-contain rounded-md"
                 loading="eager"
               />
             </div>
             
             {images.length > 1 && (
-              <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 glass-card px-4 py-2 rounded-2xl">
-                <span className="text-sm font-bold text-primary">
-                  {selectedIndex + 1} / {images.length}
-                </span>
+              <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 glass px-3 py-1.5 text-xs rounded-md">
+                {selectedIndex + 1} / {images.length}
               </div>
             )}
           </div>
