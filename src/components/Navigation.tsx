@@ -1,153 +1,78 @@
 import { useState } from 'react';
-import { Menu, X, Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-interface NavigationProps {}
-
-const Navigation = ({}: NavigationProps) => {
+const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
   const closeMenu = () => setIsOpen(false);
   const isActive = (path: string) => location.pathname === path;
 
+  const navLinks = [
+    { path: '/', label: 'Accueil' },
+    { path: '/miniatures', label: 'Miniatures' },
+    { path: '/affiches', label: 'Affiches' },
+    { path: '/autres', label: 'Autres' },
+    { path: '/entrainement', label: 'Entrainement' },
+    { path: '/contact', label: 'Contact' }
+  ];
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <h1 className="text-xl font-semibold tracking-tight text-foreground">AlymJr</h1>
-          </div>
+          <Link to="/" className="flex-shrink-0">
+            <h1 className="text-lg font-semibold tracking-tight text-foreground hover:text-primary transition-colors">
+              AlymJr
+            </h1>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
               <Link
-                to="/"
-                className={`text-sm font-medium link-underline transition-colors duration-200 ${
-                  isActive('/') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+                key={link.path}
+                to={link.path}
+                className={`text-sm font-light tracking-wide link-underline transition-colors ${
+                  isActive(link.path) 
+                    ? 'text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                Accueil
+                {link.label}
               </Link>
-              <Link
-                to="/miniatures"
-                className={`text-sm font-medium link-underline transition-colors duration-200 ${
-                  isActive('/miniatures') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Miniatures
-              </Link>
-              <Link
-                to="/affiches"
-                className={`text-sm font-medium link-underline transition-colors duration-200 ${
-                  isActive('/affiches') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Affiches
-              </Link>
-              <Link
-                to="/autres"
-                className={`text-sm font-medium link-underline transition-colors duration-200 ${
-                  isActive('/autres') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Autres
-              </Link>
-              <Link
-                to="/entrainement"
-                className={`text-sm font-medium link-underline transition-colors duration-200 ${
-                  isActive('/entrainement') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Entrainement
-              </Link>
-              <Link
-                to="/contact"
-                className={`text-sm font-medium link-underline transition-colors duration-200 ${
-                  isActive('/contact') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Contact
-              </Link>
-            </div>
+            ))}
           </div>
 
-          {/* Admin Button & Mobile Menu */}
-          <div className="flex items-center space-x-4">
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="text-foreground hover:text-primary p-2"
-              >
-                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+          <div className="md:hidden pb-6 space-y-1">
+            {navLinks.map((link) => (
               <Link
-                to="/"
+                key={link.path}
+                to={link.path}
                 onClick={closeMenu}
-                className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
-                  isActive('/') ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
+                className={`block px-4 py-3 text-sm font-light transition-colors ${
+                  isActive(link.path)
+                    ? 'text-primary font-normal'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                Accueil
+                {link.label}
               </Link>
-              <Link
-                to="/miniatures"
-                onClick={closeMenu}
-                className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
-                  isActive('/miniatures') ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Miniatures
-              </Link>
-              <Link
-                to="/affiches"
-                onClick={closeMenu}
-                className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
-                  isActive('/affiches') ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Affiches
-              </Link>
-              <Link
-                to="/autres"
-                onClick={closeMenu}
-                className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
-                  isActive('/autres') ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Autres
-              </Link>
-              <Link
-                to="/entrainement"
-                onClick={closeMenu}
-                className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
-                  isActive('/entrainement') ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Entrainement
-              </Link>
-              <Link
-                to="/contact"
-                onClick={closeMenu}
-                className={`block w-full text-left px-4 py-3 text-sm transition-colors ${
-                  isActive('/contact') ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Contact
-              </Link>
-            </div>
+            ))}
           </div>
         )}
       </div>

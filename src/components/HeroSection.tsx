@@ -1,151 +1,100 @@
-import { useEffect, useState, useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useRef } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
-  const [visibleImages, setVisibleImages] = useState<string[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
 
-  // Toutes les images du site pour le carousel
-  const allImages = [
-    // Miniatures
-    "https://i.imgur.com/aZXDQiC.jpeg",
-    "https://i.imgur.com/87YPfsX.jpeg",
-    "https://i.imgur.com/0GC8OVi.jpeg", 
-    "https://i.imgur.com/wdC2AZp.png",
-    "https://i.imgur.com/xuzJAal.jpeg",
-    "https://i.imgur.com/SUU9T3i.png",
-    "https://i.imgur.com/SlPHPIU.png",
-    "https://i.imgur.com/VEEOan5.png",
-    "https://i.imgur.com/tY3LzGE.jpeg",
-    "https://i.imgur.com/BRjjMBD.jpeg",
-    "https://i.imgur.com/VvsTs5m.jpeg",
-    "https://i.imgur.com/GAq9uPd.jpeg",
-    "https://i.imgur.com/RyW1zt9.jpeg",
-    "https://i.imgur.com/inenxOt.png",
-    "https://i.imgur.com/krcDOBd.png",
-    "https://i.imgur.com/EZQduv4.jpeg",
-    "https://i.imgur.com/1hks5NY.jpeg",
-    "https://i.imgur.com/bCAAAWM.png",
-    "https://i.imgur.com/wwiwKAh.png",
-    "https://i.imgur.com/D5da0wH.jpeg",
-    // Affiches
-    "https://i.imgur.com/JC8B9Qn.jpeg",
-    "https://i.imgur.com/1Y9lMAK.jpeg", 
-    "https://i.imgur.com/P34l3Kj.jpeg",
-    "https://i.imgur.com/VxBiPui.jpeg",
-    "https://i.imgur.com/0QT6eUc.png",
-    "https://i.imgur.com/mUSQobw.png",
-    "https://i.imgur.com/i2Hsfe5.png",
-    "https://i.imgur.com/l3ngypK.png",
-    "https://i.imgur.com/r6Hzujt.png",
-    "https://i.imgur.com/fucbF6f.jpeg",
-    "https://i.imgur.com/38s3zPS.png",
-    "https://i.imgur.com/hjOHkcP.png",
-    "https://i.imgur.com/HyT4YeO.png",
-    "https://i.imgur.com/JUvzinj.jpeg",
-    // Autres
-    "https://i.imgur.com/qnd1D2P.png",
-    "https://i.imgur.com/MS4deQ7.jpeg"
-  ];
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && heroRef.current) {
+          heroRef.current.classList.add('visible');
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  const shuffleArray = (array: string[]) => {
-    const copy = [...array];
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
     }
-    return copy;
-  };
 
-  useEffect(() => {
-    // Mélanger les images une seule fois au chargement pour éviter les re-renders
-    setVisibleImages(shuffleArray(allImages));
+    return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const menuItems = [
-    { label: "Miniatures YouTube", path: "/miniatures", icon: "🎬" },
-    { label: "Affiches Créatives", path: "/affiches", icon: "🎨" },
-    { label: "Autres Créations", path: "/autres", icon: "✨" },
-    { label: "Me Contacter", path: "/contact", icon: "📧" }
+  const categories = [
+    { title: "Miniatures", path: "/miniatures", number: "01" },
+    { title: "Affiches", path: "/affiches", number: "02" },
+    { title: "Autres", path: "/autres", number: "03" },
+    { title: "Entrainement", path: "/entrainement", number: "04" }
   ];
-
-  const handleMenuClick = () => {
-    setShowDropdown(false);
-  };
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden px-4">
-      {/* Simple gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-muted/20" />
-
-      {/* Hero Content */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto py-20">
-        <div className="fade-up visible space-y-8">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light leading-tight tracking-tight">
-            <span className="block mb-4">Miniatures,</span>
-            <span className="block mb-4">affiches</span>
-            <span className="block gradient-text font-semibold">percutantes</span>
-          </h1>
-          
-          <div className="h-px w-24 bg-border mx-auto my-12" />
-          
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light">
-            Bienvenue sur mon portfolio. <span className="text-foreground font-medium">AlymJr</span> réalise des visuels pour tes youtubeurs et streameurs préférés.
-          </p>
-          
-          <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center" ref={dropdownRef}>
-            <div className="relative">
-              <Button 
-                onClick={() => setShowDropdown(!showDropdown)}
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground h-12 px-8 rounded-md group"
-              >
-                <span>Voir mes créations</span>
-                <ChevronDown className={`ml-2 w-4 h-4 transition-transform duration-300 ${showDropdown ? 'rotate-180' : ''}`} />
-              </Button>
-              
-              {/* Dropdown Menu - Clean version */}
-              {showDropdown && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-64 glass rounded-lg overflow-hidden z-50 animate-fade-in">
-                  {menuItems.map((item, index) => (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      onClick={handleMenuClick}
-                      className="block px-6 py-3 hover:bg-muted/50 transition-colors duration-200 border-b border-border last:border-0"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-xl">{item.icon}</span>
-                        <span className="text-sm font-medium">{item.label}</span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
+    <section 
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center px-4 py-32 fade-up"
+    >
+      <div className="max-w-6xl mx-auto w-full">
+        {/* Main Title */}
+        <div className="text-center mb-24 space-y-8">
+          <div className="space-y-6">
+            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light tracking-tight leading-none">
+              AlymJr
+            </h1>
+            <div className="flex items-center justify-center gap-6">
+              <div className="h-px w-16 bg-border" />
+              <p className="text-sm text-muted-foreground tracking-[0.2em] uppercase">
+                Designer Graphique
+              </p>
+              <div className="h-px w-16 bg-border" />
             </div>
           </div>
+          
+          <p className="text-lg md:text-xl text-muted-foreground max-w-md mx-auto font-light leading-relaxed">
+            Création de visuels percutants pour<br />
+            youtubeurs et créateurs de contenu
+          </p>
         </div>
-      </div>
 
-      {/* Minimal scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
-        <div className="animate-float">
-          <ChevronDown className="w-5 h-5 text-muted-foreground/50" />
+        {/* Category Grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          {categories.map((category, index) => (
+            <Link
+              key={category.path}
+              to={category.path}
+              className="group relative zen-card p-8 hover:shadow-elevated transition-all duration-500"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="space-y-4">
+                <div className="text-5xl font-light text-muted-foreground/30 group-hover:text-primary/30 transition-colors">
+                  {category.number}
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-normal tracking-tight">
+                    {category.title}
+                  </h3>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span>Découvrir</span>
+                    <ArrowRight className="w-4 h-4 transform group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </div>
+              </div>
+              
+              {/* Hover line */}
+              <div className="absolute bottom-0 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-500" />
+            </Link>
+          ))}
+        </div>
+
+        {/* Contact Link */}
+        <div className="text-center mt-16">
+          <Link 
+            to="/contact"
+            className="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-muted-foreground hover:text-foreground link-underline transition-colors"
+          >
+            Me contacter
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>
