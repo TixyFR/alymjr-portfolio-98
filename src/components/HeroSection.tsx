@@ -88,102 +88,65 @@ const HeroSection = () => {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Carousel */}
-      <div className="absolute inset-0 z-0">
-        <div className="flex flex-col justify-center h-full gap-4 py-8">
-          {Array.from({ length: 6 }).map((_, lineIndex) => {
-            const shuffledForLine = shuffleArray(visibleImages);
-            return (
-              <div key={lineIndex} className="flex whitespace-nowrap overflow-hidden">
-                <div 
-                   className={`flex gap-4 ${
-                     lineIndex % 2 === 0 ? 'carousel-left' : 'carousel-right'
-                   }`}
-                   style={{ 
-                     animationDuration: `${Math.floor(Math.random() * 20) + 20}s` 
-                   }}
-                 >
-                    {shuffledForLine.slice(0, 10).map((src, imgIndex) => (
-                    <img
-                      key={`${lineIndex}-${imgIndex}`}
-                      src={src}
-                      alt="Portfolio preview"
-                      className="w-60 aspect-video object-cover rounded-xl opacity-20 hover:opacity-60 transition-all duration-500 hover:scale-105 hover:shadow-glow"
-                      loading="lazy"
-                      decoding="async"
-                      />
-                    ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background/99 via-background/95 to-background/99" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/70" />
-        
-        {/* Effet particules liquides */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-20 w-48 h-48 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-primary/10 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-        </div>
-      </div>
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden px-4">
+      {/* Simple gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-muted/20" />
 
       {/* Hero Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <div className="fade-up visible">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Miniatures, affiches{' '}
-            <span className="gradient-text relative">
-              percutantes
-              <div className="absolute inset-0 gradient-text blur-sm opacity-50 animate-pulse"></div>
-            </span>
+      <div className="relative z-10 text-center max-w-5xl mx-auto py-20">
+        <div className="fade-up visible space-y-8">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light leading-tight tracking-tight">
+            <span className="block mb-4">Miniatures,</span>
+            <span className="block mb-4">affiches</span>
+            <span className="block gradient-text font-semibold">percutantes</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-            Bienvenue sur mon portfolio. Moi, <span className="text-primary font-semibold">AlymJr</span> réalise des visuels pour tes youtubeurs/streameurs préférés.
+          <div className="h-px w-24 bg-border mx-auto my-12" />
+          
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light">
+            Bienvenue sur mon portfolio. <span className="text-foreground font-medium">AlymJr</span> réalise des visuels pour tes youtubeurs et streameurs préférés.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center" ref={dropdownRef}>
+          <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center items-center" ref={dropdownRef}>
             <div className="relative">
               <Button 
                 onClick={() => setShowDropdown(!showDropdown)}
                 size="lg"
-                className="bg-gradient-primary hover:scale-105 hover:shadow-glow shadow-primary text-lg px-8 py-3 h-auto group transition-all duration-300 relative overflow-hidden"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground h-12 px-8 rounded-md group"
               >
-                <div className="absolute inset-0 bg-gradient-glow opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                <span className="relative z-10">Voir mes créations</span>
-                <ChevronDown className={`ml-2 w-5 h-5 transition-all duration-300 ${showDropdown ? 'rotate-180' : 'group-hover:translate-y-1'}`} />
+                <span>Voir mes créations</span>
+                <ChevronDown className={`ml-2 w-4 h-4 transition-transform duration-300 ${showDropdown ? 'rotate-180' : ''}`} />
               </Button>
               
-              {/* Dropdown Menu */}
-                  {showDropdown && (
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 liquid-glass shadow-glow border border-primary/20 overflow-hidden z-50 animate-fade-in">
-                      {menuItems.map((item, index) => (
-                        <Link
-                          key={item.path}
-                          to={item.path}
-                          onClick={handleMenuClick}
-                          className="w-full text-left px-6 py-4 hover:bg-white/10 transition-all duration-300 flex items-center space-x-3 group liquid-hover"
-                          style={{ animationDelay: `${index * 50}ms` }}
-                        >
-                          <span className="text-2xl group-hover:scale-110 transition-transform duration-200">{item.icon}</span>
-                          <span className="font-medium group-hover:text-primary transition-colors duration-200">{item.label}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+              {/* Dropdown Menu - Clean version */}
+              {showDropdown && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-64 glass rounded-lg overflow-hidden z-50 animate-fade-in">
+                  {menuItems.map((item, index) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={handleMenuClick}
+                      className="block px-6 py-3 hover:bg-muted/50 transition-colors duration-200 border-b border-border last:border-0"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="text-xl">{item.icon}</span>
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <ChevronDown className="w-6 h-6 text-muted-foreground" />
+      {/* Minimal scroll indicator */}
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
+        <div className="animate-float">
+          <ChevronDown className="w-5 h-5 text-muted-foreground/50" />
+        </div>
       </div>
     </section>
   );
