@@ -108,7 +108,7 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
           <OptimizedImage
             src={image}
             alt={`${title} ${index + 1}`}
-            className="w-full h-64 object-contain image-hover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-auto object-contain image-hover transition-transform duration-500 group-hover:scale-110"
             onLoad={() => handleImageLoad(index)}
             onError={() => handleImageLoad(index)}
             lazy={false}
