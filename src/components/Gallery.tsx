@@ -108,7 +108,7 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
           <OptimizedImage
             src={image}
             alt={`${title} ${index + 1}`}
-            className={`w-full ${displayColumns === 6 ? 'h-auto' : 'aspect-video'} object-cover image-hover transition-transform duration-500 group-hover:scale-110`}
+            className="w-full h-64 object-contain image-hover transition-transform duration-500 group-hover:scale-110"
             onLoad={() => handleImageLoad(index)}
             onError={() => handleImageLoad(index)}
             lazy={false}
@@ -205,7 +205,7 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
               <img
                 src={selectedImage}
                 alt="Vue agrandie"
-                className="max-w-full max-h-full object-contain rounded-xl"
+                className="max-w-[75vw] max-h-[75vh] object-contain rounded-xl"
                 loading="eager"
               />
             </div>
