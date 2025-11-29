@@ -111,7 +111,7 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
             className={`w-full ${displayColumns === 6 ? 'h-auto' : 'aspect-video'} object-cover image-hover transition-transform duration-500 group-hover:scale-110`}
             onLoad={() => handleImageLoad(index)}
             onError={() => handleImageLoad(index)}
-            lazy={true}
+            lazy={false}
           />
           
           {/* Loading placeholder */}
