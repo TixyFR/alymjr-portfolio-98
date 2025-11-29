@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -18,8 +18,10 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const isMobile = useIsMobile();
 
+  // Responsive columns based on device
   const displayColumns = isMobile ? Math.min(columns, 2) : columns;
 
+  // Memoize grid classes for better performance
   const gridCols = useMemo(() => {
     const cols = displayColumns;
     switch (cols) {
@@ -28,10 +30,11 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
       case 3: return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
       case 2: return 'grid-cols-1 sm:grid-cols-2';
       case 1: return 'grid-cols-1';
-      default: return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4';
+      default: return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
     }
   }, [displayColumns]);
 
+  // Optimized intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -50,6 +53,7 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
     return () => observer.disconnect();
   }, [id]);
 
+  // Optimized lightbox functions
   const openLightbox = useCallback((image: string, index: number) => {
     setSelectedImage(image);
     setSelectedIndex(index);
@@ -70,6 +74,7 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
     setSelectedImage(images[newIndex]);
   }, [selectedIndex, images]);
 
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (selectedImage) {
@@ -83,122 +88,130 @@ const Gallery = ({ id, title, description, images, columns = 4 }: GalleryProps) 
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [selectedImage, navigateImage, closeLightbox]);
 
+  // Optimized image loading
   const handleImageLoad = useCallback((index: number) => {
     setLoadedImages(prev => new Set([...prev, index]));
   }, []);
 
+  // Memoized image component for better performance
   const ImageComponent = useMemo(() => {
     return images.map((image, index) => (
       <div
-        key={`${image}-${index}`}
-        className={`zen-card group cursor-pointer overflow-hidden fade-up ${
+        key={`${image}-${index}`} // Better key for potential duplicates
+        className={`modern-card group cursor-pointer fade-up transition-all duration-300 hover:scale-[1.02] ${
           isVisible ? 'visible' : ''
         } ${loadedImages.has(index) ? 'opacity-100' : 'opacity-0'}`}
-        style={{ animationDelay: `${index * 50}ms` }}
+        style={{ animationDelay: `${index * 30}ms` }} // Reduced delay for smoother loading
         onClick={() => openLightbox(image, index)}
       >
-        <div className="relative overflow-hidden rounded-md aspect-video">
+        <div className="relative overflow-hidden rounded-lg">
           <OptimizedImage
             src={image}
             alt={`${title} ${index + 1}`}
-            className="w-full h-full object-cover image-hover"
+            className={`w-full ${displayColumns === 6 ? 'h-auto' : 'aspect-video'} object-cover image-hover transition-transform duration-500 group-hover:scale-110`}
             onLoad={() => handleImageLoad(index)}
             onError={() => handleImageLoad(index)}
             lazy={false}
           />
           
+          {/* Loading placeholder */}
           {!loadedImages.has(index) && (
-            <div className="absolute inset-0 bg-muted animate-pulse rounded-md flex items-center justify-center">
-              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="absolute inset-0 bg-muted animate-pulse rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           )}
           
-          <div className="absolute inset-0 bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
+            <ZoomIn className="w-8 h-8 text-primary drop-shadow-lg" />
+          </div>
         </div>
       </div>
     ));
-  }, [images, title, isVisible, loadedImages, openLightbox, handleImageLoad]);
+  }, [images, title, displayColumns, isVisible, loadedImages, openLightbox, handleImageLoad]);
 
   return (
     <>
       <section 
         id={id} 
-        className={`py-24 px-6 transition-all duration-700 ${
+        className={`py-20 px-4 transition-all duration-700 ${
           isVisible ? 'fade-up visible' : 'fade-up'
         }`}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20 space-y-6">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight">
-              {title}
-            </h2>
-            <div className="h-px w-16 bg-border mx-auto" />
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-light leading-relaxed">
+          <div className="text-center mb-16">
+            <div className="liquid-glass inline-block px-8 py-4 mb-4">
+              <h2 className="text-4xl md:text-5xl font-bold gradient-text">
+                {title}
+              </h2>
+            </div>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {description}
             </p>
-            <div className="text-xs text-muted-foreground/70 font-light tracking-wider">
-              {images.length} {images.length > 1 ? 'images' : 'image'}
+            <div className="mt-4 text-sm text-muted-foreground">
+              {images.length} image{images.length > 1 ? 's' : ''} disponible{images.length > 1 ? 's' : ''}
             </div>
           </div>
 
-          {images.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-muted-foreground font-light">Aucune image disponible</p>
-            </div>
-          ) : (
-            <div className={`grid ${gridCols} gap-4`}>
-              {ImageComponent}
-            </div>
-          )}
+          <div className="relative p-6 liquid-glass">
+            {images.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-lg">Aucune image à afficher pour le moment.</p>
+              </div>
+            ) : (
+              <div className={`grid ${gridCols} gap-6`}>
+                {ImageComponent}
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* Lightbox */}
+      {/* Optimized Apple-style Lightbox */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/98 backdrop-blur-2xl"
           onClick={closeLightbox}
         >
-          <div className="relative max-w-[90vw] max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-[90vw] max-h-[90vh] p-4" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={closeLightbox}
-              className="absolute -top-14 right-0 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+              className="absolute -top-4 -right-4 z-10 p-3 liquid-glass hover:scale-110 transition-all duration-300"
               aria-label="Fermer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-6 h-6" />
             </button>
             
             {images.length > 1 && (
               <>
                 <button
                   onClick={() => navigateImage('prev')}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 liquid-glass hover:scale-110 transition-all duration-300"
                   aria-label="Image précédente"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-8 h-8" />
                 </button>
                 
                 <button
                   onClick={() => navigateImage('next')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 liquid-glass hover:scale-110 transition-all duration-300"
                   aria-label="Image suivante"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-8 h-8" />
                 </button>
               </>
             )}
             
-            <div className="zen-card p-4">
+            <div className="liquid-glass p-4">
               <img
                 src={selectedImage}
                 alt="Vue agrandie"
-                className="max-w-full max-h-[85vh] object-contain rounded-md"
+                className="max-w-full max-h-full object-contain rounded-xl"
                 loading="eager"
               />
             </div>
             
             {images.length > 1 && (
-              <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 glass px-3 py-1.5 text-xs rounded-md">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 liquid-glass px-4 py-2 text-sm">
                 {selectedIndex + 1} / {images.length}
               </div>
             )}

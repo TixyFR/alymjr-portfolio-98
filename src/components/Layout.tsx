@@ -5,6 +5,7 @@ import AdminModal from '@/components/AdminModal';
 import BackToTop from '@/components/BackToTop';
 import DynamicBackground from '@/components/DynamicBackground';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { Button } from '@/components/ui/button';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,23 +15,25 @@ const Layout = ({ children }: LayoutProps) => {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-hero">
       <DynamicBackground />
       <Navigation />
       
-      {/* Theme Toggle */}
-      <div className="fixed top-6 right-6 z-50">
+      {/* Theme Toggle - Top Right */}
+      <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
       </div>
       
-      {/* Hidden Admin Button */}
-      <button
+      {/* Hidden Admin Button - Bottom Right */}
+      <Button
         onClick={() => setIsAdminModalOpen(true)}
-        className="fixed bottom-6 right-6 z-40 p-2 glass opacity-20 hover:opacity-100 transition-opacity rounded-md"
+        variant="ghost"
+        size="icon"
+        className="fixed bottom-4 right-4 z-40 opacity-20 hover:opacity-100 transition-opacity duration-300 glass"
         aria-label="Admin"
       >
         <Settings className="h-4 w-4" />
-      </button>
+      </Button>
       
       {children}
 

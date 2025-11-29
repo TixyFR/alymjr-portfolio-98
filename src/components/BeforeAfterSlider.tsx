@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import OptimizedImage from './OptimizedImage';
 
 interface BeforeAfterItem {
@@ -18,8 +19,8 @@ const BeforeAfterSlider = ({ items }: BeforeAfterSliderProps) => {
 
   if (!items || items.length === 0) {
     return (
-      <div className="text-center py-32">
-        <p className="text-muted-foreground font-light">Aucun exercice disponible</p>
+      <div className="text-center py-20">
+        <p className="text-muted-foreground">Aucun exercice d'entrainement disponible</p>
       </div>
     );
   }
@@ -35,52 +36,38 @@ const BeforeAfterSlider = ({ items }: BeforeAfterSliderProps) => {
   };
 
   return (
-    <div className="space-y-12">
-      {/* Title Section */}
-      <div className="text-center space-y-6">
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight">
-          Entrainement
-        </h2>
-        <div className="h-px w-16 bg-border mx-auto" />
-        <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-light leading-relaxed">
-          Cliquez sur une image pour voir l'évolution
-        </p>
-      </div>
-
-      {/* Grid of thumbnails */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
+    <div className="space-y-8">
+      {/* Grid of "After" thumbnails */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {items.map((item, index) => (
           <div
             key={item.id}
-            className="zen-card group cursor-pointer overflow-hidden fade-up visible"
-            style={{ animationDelay: `${index * 50}ms` }}
+            className="relative group cursor-pointer overflow-hidden rounded-lg aspect-video bg-muted hover:scale-105 transition-transform"
             onClick={() => setSelectedIndex(index)}
           >
-            <div className="relative overflow-hidden rounded-md aspect-video">
-              <OptimizedImage
-                src={item.after_image_url}
-                alt={`Après - ${item.title}`}
-                className="w-full h-full object-cover image-hover"
-              />
-              <div className="absolute inset-0 bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <span className="text-xs tracking-wider uppercase text-foreground font-light">
-                  Voir l'évolution
-                </span>
-              </div>
+            <OptimizedImage
+              src={item.after_image_url}
+              alt={`Après - ${item.title}`}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span className="text-white font-semibold">Voir avant/après</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Full screen comparison modal */}
+      {/* Full screen modal for before/after comparison */}
       {selectedIndex !== null && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-6">
-          <button
-            className="absolute top-6 right-6 z-20 p-2 glass hover:bg-card transition-colors rounded-md"
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex items-center justify-center p-4">
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute top-4 right-4 z-20"
             onClick={() => setSelectedIndex(null)}
           >
-            <X className="w-5 h-5" />
-          </button>
+            <X className="w-4 h-4" />
+          </Button>
 
           <div className="relative w-full max-w-6xl">
             <BeforeAfterComparison
@@ -91,18 +78,22 @@ const BeforeAfterSlider = ({ items }: BeforeAfterSliderProps) => {
 
             {items.length > 1 && (
               <>
-                <button
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur"
                   onClick={handlePrev}
                 >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 glass hover:bg-card transition-colors rounded-md"
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur"
                   onClick={handleNext}
                 >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
               </>
             )}
           </div>
@@ -147,28 +138,28 @@ const BeforeAfterComparison = ({ beforeImage, afterImage, title }: BeforeAfterCo
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-4">
+    <div className="max-w-4xl mx-auto">
       <div
-        className="relative select-none overflow-hidden rounded-md aspect-video bg-muted touch-none zen-card"
+        className="relative select-none overflow-hidden rounded-lg aspect-video bg-muted touch-none"
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleMouseUp}
       >
-        {/* After Image */}
+        {/* After Image (Full) */}
         <div className="absolute inset-0">
           <OptimizedImage
             src={afterImage}
             alt="Après"
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-4 right-4 px-3 py-1 rounded-md glass text-xs tracking-wider uppercase">
+          <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
             Après
           </div>
         </div>
 
-        {/* Before Image */}
+        {/* Before Image (Clipped) */}
         <div
           className="absolute inset-0 overflow-hidden"
           style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
@@ -178,21 +169,21 @@ const BeforeAfterComparison = ({ beforeImage, afterImage, title }: BeforeAfterCo
             alt="Avant"
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-4 left-4 px-3 py-1 rounded-md glass text-xs tracking-wider uppercase">
+          <div className="absolute top-4 left-4 bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm font-semibold">
             Avant
           </div>
         </div>
 
         {/* Slider */}
         <div
-          className="absolute top-0 bottom-0 w-0.5 bg-primary cursor-ew-resize"
+          className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize"
           style={{ left: `${sliderPosition}%` }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleMouseDown}
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-full shadow-lg flex items-center justify-center">
-            <ChevronLeft className="w-3 h-3 text-primary-foreground absolute left-2" />
-            <ChevronRight className="w-3 h-3 text-primary-foreground absolute right-2" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+            <ChevronLeft className="w-3 h-3 absolute left-1" />
+            <ChevronRight className="w-3 h-3 absolute right-1" />
           </div>
         </div>
       </div>

@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Mail, Send, User, ArrowRight } from 'lucide-react';
+import { Mail, Send, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Layout from '@/components/Layout';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -21,7 +22,7 @@ const Contact = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.functions.invoke('send-contact-email', {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
         body: {
           name: formData.name,
           email: formData.email,
@@ -51,140 +52,144 @@ const Contact = () => {
 
   return (
     <Layout>
-      <div className="pt-32 pb-24 min-h-screen px-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-20 space-y-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight">
-              Contact
+      <div className="pt-20 min-h-screen">
+        <div className="max-w-4xl mx-auto px-4 py-16">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              Me <span className="gradient-text">Contacter</span>
             </h1>
-            <div className="h-px w-16 bg-border mx-auto" />
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-light leading-relaxed">
-              Vous avez un projet ? N'hésitez pas à me contacter
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Vous avez un projet en tête ? Une question ? N'hésitez pas à me contacter !
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 gap-8">
             {/* Contact Form */}
-            <div className="zen-card p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-light text-muted-foreground mb-2">
-                    Nom
-                  </label>
-                  <Input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Votre nom"
-                    required
-                    className="bg-muted/50 border-border"
-                  />
-                </div>
+            <Card className="glass">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Mail className="w-5 h-5 text-primary" />
+                  <span>Formulaire de Contact</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Nom complet *
+                    </label>
+                    <Input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      placeholder="Votre nom"
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-light text-muted-foreground mb-2">
-                    Email
-                  </label>
-                  <Input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="votre@email.com"
-                    required
-                    className="bg-muted/50 border-border"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Email *
+                    </label>
+                    <Input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="votre@email.com"
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-light text-muted-foreground mb-2">
-                    Sujet
-                  </label>
-                  <Input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    placeholder="Sujet du message"
-                    className="bg-muted/50 border-border"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Sujet
+                    </label>
+                    <Input
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      placeholder="Sujet de votre message"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-light text-muted-foreground mb-2">
-                    Message
-                  </label>
-                  <Textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Votre message..."
-                    rows={6}
-                    required
-                    className="bg-muted/50 border-border resize-none"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Message *
+                    </label>
+                    <Textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Votre message..."
+                      rows={6}
+                      required
+                    />
+                  </div>
 
-                <Button 
-                  type="submit" 
-                  disabled={isLoading}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-12 group"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
-                      <span>Envoi en cours...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <span>Envoyer</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  )}
-                </Button>
-              </form>
-            </div>
+                  <Button 
+                    type="submit" 
+                    disabled={isLoading}
+                    className="w-full bg-gradient-primary hover:scale-105 hover:shadow-glow"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
+                        <span>Envoi en cours...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        <Send className="w-4 h-4" />
+                        <span>Envoyer le message</span>
+                      </div>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
 
             {/* Contact Info */}
             <div className="space-y-6">
-              <div className="zen-card p-8 space-y-6">
-                <h3 className="text-xl font-normal">Informations</h3>
-                <div className="space-y-4 text-sm">
-                  <div className="flex items-start gap-3">
-                    <Mail className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-muted-foreground font-light">Email</p>
-                      <p className="text-foreground">contact@alymjr.fr</p>
+              <Card className="glass">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-4">Informations de Contact</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Mail className="w-5 h-5 text-primary" />
+                      <span>contact@alymjr.fr</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <User className="w-5 h-5 text-primary" />
+                      <span>AlymJr - Designer Graphique</span>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <User className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-muted-foreground font-light">Designer</p>
-                      <p className="text-foreground">AlymJr</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              <div className="zen-card p-8 space-y-4">
-                <h3 className="text-xl font-normal">Services</h3>
-                <ul className="space-y-2 text-sm font-light text-muted-foreground">
-                  <li>Miniatures YouTube</li>
-                  <li>Affiches créatives</li>
-                  <li>Identité visuelle</li>
-                  <li>Designs pour réseaux sociaux</li>
-                </ul>
-              </div>
+              <Card className="glass">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-4">Mes Services</h3>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li>• Création de miniatures YouTube</li>
+                    <li>• Design d'affiches créatives</li>
+                    <li>• Identité visuelle & logos</li>
+                    <li>• Designs pour réseaux sociaux</li>
+                    <li>• Illustrations personnalisées</li>
+                  </ul>
+                </CardContent>
+              </Card>
 
-              <div className="zen-card p-8 space-y-4">
-                <h3 className="text-xl font-normal">Réponse</h3>
-                <p className="text-sm font-light text-muted-foreground leading-relaxed">
-                  Je réponds généralement sous 24h. Pour les projets urgents, mentionnez-le dans votre message.
-                </p>
-              </div>
+              <Card className="glass">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-4">Temps de Réponse</h3>
+                  <p className="text-muted-foreground">
+                    Je réponds généralement dans les 24h. Pour les projets urgents, 
+                    n'hésitez pas à le mentionner dans votre message.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
